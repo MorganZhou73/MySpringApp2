@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body ng-app="myApp">
+<h1>App - module, Model - $Scope, Controller </h1>
+
+<p>The rootScope's favorite color: <b>{{color | uppercase}}</b> </p>
+
+<div ng-controller="myCtrl" ng-init="port=9000; name='joe'; myCol='lightblue'" >
+ <h2> Controller </h2>
+	<p>Input something in the input box:</p>
+	<p>port: <input type="text" style="background-color:{{myCol}}" ng-model="port"></p>
+	<p>Name: <input type="text" ng-model="name"></p>
+    
+    <p>The scope of the controller's favorite color:</p>
+  	<h3>{{color | lowercase}}</h3>
+
+	<p ng-bind="port"></p>
+    <p>func1() = : {{func1()}}</p>
+    <p>The name is <span ng-bind="name"></span></p>
+    <p>My first expression: {{ 5 + 5 + port }}</p>
+    <p>The third points is <span ng-bind="points[2]"></span></p>
+    directive as attribute:<br/>
+	<p my-test-directive></p>
+    directive as element:<br/>
+    <my-test-directive> </my-test-directive><br/>
+    directive as class: <br/>
+    <div class="my-test-directive2"></div>
+    
+    <!-- directive: my-test-directive3 -->
+    
+	<div>
+		<p>The greeting ID is {{greeting.id}}</p>
+		<p>The content is {{greeting.content}}</p>
+	</div>
+    orderBy: country (click x to remove it):<br/>
+    <ul>
+  		<li ng-repeat="x in persons | orderBy:'country'">
+    	{{ x.name  + ', ' + x.country }} <span ng-click="removeItem($index)"> x </span>
+  		</li>
+	</ul>
+    name:<input ng-model="newName"> country: <input ng-model="newCountry">
+    <button ng-click="addItem()">Add</button>
+    <p style="color:red">{{errortext}}</p>
+    
+    contains the letter "i" :<br/>
+    <ul>
+  		<li ng-repeat="x in persons | filter : 'i'">
+    	{{ x.name  + ', ' + x.country }}
+  		</li>
+	</ul>
+    
+    contains the input string :<br/>
+    <p><input type="text" ng-model="test"></p>
+    <ul>
+  		<li ng-repeat="x in persons | filter : test">
+    	{{ x.name  + ', ' + x.country }}
+  		</li>
+	</ul>
+    
+
+    
+<table border="1" width="100%">
+  <tr>
+    <th ng-click="orderByMe('name')">Name</th>
+    <th ng-click="orderByMe('country')">Country</th>
+  </tr>
+  <tr ng-repeat="x in persons | orderBy:myOrderBy">
+    <td>{{x.name}}</td>
+    <td>{{x.country}}</td>
+  </tr>
+</table>  
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.run(function($rootScope) {
+  $rootScope.color = 'blue';
+});
+
+app.controller('myCtrl', function($scope) {
+  $scope.name= "John";
+  $scope.port= 9100;
+  $scope.greeting = {id:2, content:'Good morning'};
+  $scope.points=[1,15,19,2,40]; 
+  $scope.color = "red";
+  
+  $scope.persons = [
+    {name:'Jani',country:'Norway'},
+    {name:'Hege',country:'Sweden'},
+    {name:'Kai',country:'Denmark'}
+  ];
+  
+  $scope.addItem = function () {
+      
+      $scope.errortext = "";      
+      if (!$scope.newName) {return;}   
+      
+      var newPerson = {name: $scope.newName, country:$scope.newCountry}
+      var existed = $scope.persons.find(({ name }) => name == $scope.newName);
+      
+      if (existed == null) {
+         $scope.persons.push(newPerson);
+      } else {
+         $scope.errortext = "The person is already in persons list.";
+      }
+  }
+  $scope.removeItem = function (x) {
+  	  $scope.errortext = "";
+      $scope.persons.splice(x, 1);
+  }
+   
+  $scope.func1 = function() {
+    return $scope.name + " at :"  + $scope.port;
+  };
+  
+  $scope.orderByMe = function(x) {
+    $scope.myOrderBy = x;
+  }
+});
+
+app.directive("myTestDirective", function() {
+    return {
+        template : "I was made in a directive constructor!"
+    };
+});
+
+app.directive("myTestDirective2", function() {
+    return {
+        restrict : "C",
+        template : "<h2>Made by a directive!</h2>"
+    };
+});
+
+app.directive("myTestDirective3", function() {
+    return {
+        restrict : "M",
+        replace : true,
+        template : "<h2>Made by a directive!</h2>"
+    };
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+
+$(document).ready(function(){
+  $("#btn1").click(function(){
+    var filename = $("#file1").val();
+    
+    // $("#div1").load(filename);
+    $("#div1").load(filename, function(responseTxt, statusTxt, xhr){
+      if(statusTxt == "success")
+        $("#msg1").text("External content loaded successfully!");
+      if(statusTxt == "error")
+        $("#msg1").text("Error: " + xhr.status + ": " + xhr.statusText);
+    });
+  });
+  
+  function getDatatype(strData){
+	var strData1 = jQuery.trim(strData);
+    if(strData1.length >0) {
+      if(strData1.charAt(0) == '[' || strData1.charAt(0) == '{')
+          return ["json", "application/json"];
+
+      if(strData1.charAt(0) == '<')
+          return ["xml", "application/xml"];
+    }
+ 
+	return ["text", "text/plain"];  
+  }
+  
+  function getObject(strData){
+  	var strData1 = $.trim(strData);
+    if(strData1.length >0) {
+      if(strData1.charAt(0) == '[' || strData1.charAt(0) == '{'){
+          return jQuery.parseJSON(strData1);
+      }
+
+      if(strData1.charAt(0) == '<'){
+          return $.parseXML(strData1);
+      }
+    }
+    
+    return strData;
+  }
+  
+  function serializeXML(xmldom) {
+    if (typeof XMLSerializer != "undefined") {
+      return (new XMLSerializer()).serializeToString(xmldom);
+    } else if (typeof xmldom.xml != "undefined") {
+      return xmldom.xml;
+    } else {
+      throw new Error("Could not serialize XML DOM.");
+    }
+  }
+
+  function objectToString(obj){
+    var strRet;
+    if($.isXMLDoc(obj)){
+		strRet = serializeXML(obj);
+    } else if(typeof obj == 'object'){
+		strRet = JSON.stringify(obj);
+    } else {
+		strRet = obj;
+    }
+    
+  	return strRet;
+  }
+  
+  $("#btn4").click(function(){
+	var postData = $.trim($("#toPost").val());
+    var myType = getDatatype(postData);
+
+	$("#div1").text(myType[0] + ", " + myType[1]);
+	
+	$.ajax({
+      type: "POST",
+      url: $("#destUrl").val(),
+      data: postData,
+      success: function(data,status){
+        $("#msg1").text("Data: " + data + "\nStatus: " + status);
+      },
+      dataType: myType[0],
+      contentType: myType[1],
+      error: function (jqXHR, textStatus, errorThrown) {
+        $("#msg1").text("jqXHR: " + jqXHR + "\nStatus: " +         
+        textStatus + "\nError: " + errorThrown);
+      }
+    });
+  });
+  
+  $("#btn3").click(function(){
+    //var postData = { name: "Donald Duck", city: "Duckburg" };
+	var postData = getObject($("#toPost").val());
+    
+    $("#div1").text(objectToString(postData));
+
+    $.post($("#destUrl").val(),
+    postData,
+    function(data,status){
+      $("#msg1").text("Data: " + data + "\nStatus: " + status);
+    });
+
+  });
+  
+  $("#btn2").click(function(){
+    $.get($("#destUrl").val(), function(data, status){
+      $("#msg1").text("Data: " + data + "\nStatus: " + status);
+     
+    });
+  });
+  
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myList li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+</head>
+<body>
+
+<h1>jQuery AJAX, HTTP Get, Post, Filter </h1>
+
+<div id="div1"><h2>Let jQuery AJAX Change This Text</h2></div>
+
+file name: <input type="text" id="file1" value="demo_test.txt">
+<button id="btn1">Get External Content</button> <br/> <br/>
+
+<p>Url: <input type="text" id="destUrl"  size=80 value="demo_test_post.asp" /> </p>
+<p>post data: <textarea id="toPost" cols="80" rows="5" 
+  >{
+      "name": "Donald Duck",
+      "city": "Duckburg"
+}</textarea> </p>
+<button id="btn2">Send an HTTP GET request</button> 
+<button id="btn3">Send an HTTP POST request</button> 
+<button id="btn4">Send an HTTP POST 2 with content type</button> 
+<br/><br/>
+<div id="msg1"></div>
+
+<p>Type something in the input field to search the list for specific items:</p>  
+<input id="myInput" type="text" placeholder="Search..">
+<br>
+
+<ul id="myList">
+  <li>First item</li>
+  <li>Second item</li>
+  <li>Third item</li>
+  <li>Fourth</li>
+</ul>
+
+</body>
+</html>

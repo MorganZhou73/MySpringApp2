@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spring Security Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="Hello" >
+<h1>Welcome! - myservice2</h1>
+
+<p>Click <a href="/hello">here</a> to see a greeting of Greeting2Controller->HelloService </p>
+<p>Click <a href="/hello2">here</a> to see a greeting: MvcConfig->hello.html </p>
+
+<h2> this is from home.html with AngularJS</h2>
+<p>Get your <a href="/index.html"> home page by index.html</a></p>
+<p>Get your <a href="/"> home2.html with jQuery </a></p>
+
+<p>Get your <a href="/greeting">greeting</a></p>
+<p><a href="/fileupload">fileupload</a></p>
+
+<p>Get your <a href="/greeting2">greeting2</a>  , login user/password: user1/ secret123 </p>
+<p><a href="/searchPeople?name=Davolio">searchPeople with name</a></p>
+<p><a href="/searchPeople">searchPeople without name</a></p>
+<p> people: <a href="/people">/people{?page,size,sort}</a> </p>
+<p> employee: <a href="/employee">employee{?page,size,sort}</a> </p>
+
+<p> existed employee: <a href="/employees/1">employee 1</a> </p>
+<p> unfound employee: <a href="/employees/20">employee 20</a> </p>
+
+<p>Url: <input type="text" ng-model="destUrl"  size=80 /> </p>
+<p>post data: <textarea ng-model="toPost" cols="80" rows="5"></textarea> </p>
+
+<button ng-click="getUrl()">Send an HTTP GET request</button>
+<button ng-click="postUrl()">Send an HTTP POST $http.post</button>
+<button ng-click="postUrl2()">Send an HTTP POST 2 $http with headers</button>
+<br/><br/>
+
+<p>Send DataType : {{myType}}</p>
+
+<p>Received Data : {{msg1}}</p>
+<p>Status : {{statuscode}}</p>
+<p>StatusText : {{statustext}}</p>
+<p>Response Headers: {{headers}}</p>
+
+<script>
+      var app = angular.module('myApp', []);
+
+      app.controller('Hello', function($scope, $http) {
+        if (!$scope.destUrl)
+           $scope.destUrl = "http://localhost:9000/greeting";
+        $scope.toPost = "<message><id>1</id><content>Good morning</content></message>";
+        //$scope.toPost = "{\"id\":1, \"content\":\"good evening\"}";
+        //$scope.toPost = "good evening";
+
+        $scope.getDatatype = function(strData){
+          var strData1 = strData.trim();
+          if(strData1.length >0) {
+            if(strData1.charAt(0) == '[' || strData1.charAt(0) == '{')
+              return ["json", "application/json"];
+
+            if(strData1.charAt(0) == '<')
+              return ["xml", "application/xml"];
+          }
+
+          return ["text", "text/plain"];
+        };
+
+  		$scope.myType = $scope.getDatatype($scope.toPost);
+        $scope.msg1 = $scope.myType[1];
+
+        $scope.getUrl = function() {
+
+          $http({
+            method : "GET",
+            url : $scope.destUrl
+          }).then(function mySuccess(response) {
+            $scope.msg1 = response.data;
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          }, function myError(response) {
+            $scope.msg1 = "";
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          });
+        };
+
+        $scope.postUrl = function() {
+          $scope.myType = $scope.getDatatype($scope.toPost);
+
+          var config = {
+                headers : {
+                    'Content-Type': $scope.myType[1]
+                }
+            };
+
+          $http.post($scope.destUrl, $scope.toPost, config)
+          .then(function mySuccess(response) {
+            $scope.msg1 = response.data;
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          }, function myError(response) {
+            $scope.msg1 = "";
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          });
+        };
+
+        $scope.postUrl2 = function() {
+		  $scope.myType = $scope.getDatatype($scope.toPost);
+
+          $http({
+            method : "POST",
+            url : $scope.destUrl,
+            data: $scope.toPost,
+            headers: {
+        	"Content-Type": $scope.myType[1]
+    		}
+          }).then(function mySuccess(response) {
+            $scope.msg1 = response.data;
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          }, function myError(response) {
+            $scope.msg1 = "";
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          });
+        };
+
+        //$scope.getUrl();
+      });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>greeting page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="hello_jquery.js"></script>
+</head>
+<body>
+This is greeting page.
+<p th:text="'Hello, ' + ${name} + '!'" />
+
+<div>
+	you can set the destination port as parameter of this url: ?port=9000<br/>
+    but the thymeleaf will show ${port} as null since it is not defined samilar as ${name} in controller /greeting2 <br/>
+    <B>the following is to test CORS : the endpoint which only permits CrossOrigin from http://localhost:8080</B>
+    <p th:text="'destination port: ' + ${port} + ' '" />
+    <p class="destination-url">Dest URL: </p>
+    <p class="greeting-id">The ID is </p>
+    <p class="greeting-content">The content is </p>
+</div>
+</body>
+</html>

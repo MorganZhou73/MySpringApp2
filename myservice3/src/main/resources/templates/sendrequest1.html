@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Request with AngularJS</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="Hello" >
+<h1>Welcome! AngularJS  - myservice3</h1>
+
+<p> <a href="/sendrequest2">sendrequest2 with jQuery</a> </p>
+
+<p> <a href="/users">Users and Orders</a> </p>
+<p> employee: <a href="/employees">employee</a> </p>
+
+<p> existed employee: <a href="/employees/1">employee 1</a> </p>
+<p> unfound employee: <a href="/employees/20">employee 20</a> </p>
+
+<p>to add a user, POST url like: /users/add?name=Joe&email=joe1@a.com </p>
+<p>to send Rabbit Message Queue (myservice3.queue) , send URL like: /myservice3-rabbitmq/employee?id=100&firstName=Kane&lastName=Mc , myservice2 would receive the message, and save to MongoDB.Employees if the EmployeeID doesnot exist in DB </p>
+<p> to test CORS of myservice2 (port:8081): Send an HTTP GET request to http://localhost:8081/greeting?name=Joe </p>
+
+<p>Url: <input type="text" ng-model="destUrl"  size=80 /> </p>
+<p>post data: <textarea ng-model="toPost" cols="80" rows="5"></textarea> </p>
+
+<button ng-click="getUrl()">Send an HTTP GET request</button>
+<button ng-click="postUrl()">Send an HTTP POST $http.post</button>
+<br/><br/>
+
+<p>Send DataType : {{myType}}</p>
+
+<p>Received Data : {{msg1}}</p>
+<p>Status : {{statuscode}}</p>
+<p>StatusText : {{statustext}}</p>
+<p>Response Headers: {{headers}}</p>
+
+<script>
+      var app = angular.module('myApp', []);
+
+      app.controller('Hello', function($scope, $http) {
+        if (!$scope.destUrl)
+           $scope.destUrl = "/employees";
+        $scope.toPost = "{ \"firstName\": \"Tom\", \"lastName\":\"Mc\", \"title\": \"Sales Rep\", \"birthDate\": \"1972-01-23\", \"city\": \"Markham\", \"reportsTo\": 2 }";
+
+        $scope.getDatatype = function(strData){
+          var strData1 = strData.trim();
+          if(strData1.length >0) {
+            if(strData1.charAt(0) == '[' || strData1.charAt(0) == '{')
+              return ["json", "application/json"];
+
+            if(strData1.charAt(0) == '<')
+              return ["xml", "application/xml"];
+          }
+
+          return ["text", "text/plain"];
+        };
+
+  		$scope.myType = $scope.getDatatype($scope.toPost);
+        $scope.msg1 = $scope.myType[1];
+
+        $scope.getUrl = function() {
+
+          $http({
+            method : "GET",
+            url : $scope.destUrl
+          }).then(function mySuccess(response) {
+            $scope.msg1 = response.data;
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          }, function myError(response) {
+            $scope.msg1 = "";
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          });
+        };
+
+        $scope.postUrl = function() {
+          $scope.myType = $scope.getDatatype($scope.toPost);
+
+          var config = {
+                headers : {
+                    'Content-Type': $scope.myType[1]
+                }
+            };
+
+          $http.post($scope.destUrl, $scope.toPost, config)
+          .then(function mySuccess(response) {
+            $scope.msg1 = response.data;
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          }, function myError(response) {
+            $scope.msg1 = "";
+            $scope.statuscode = response.status;
+            $scope.statustext = response.statusText;
+            $scope.headers = response.headers();
+          });
+        };
+
+        //$scope.getUrl();
+      });
+
+    </script>
+</body>
+</html>

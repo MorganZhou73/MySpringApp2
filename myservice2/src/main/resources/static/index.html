@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h2> this is from index.html</h2>
+
+<p>Get your <a href="/"> home page by home.html</a></p>
+
+<p>Get your <a href="/greeting">greeting</a></p>
+<p>Get your <a href="/greeting2">greeting2</a></p>
+<p><a href="/searchPeople?name=Davolio">searchPeople with name</a></p>
+<p><a href="/searchPeople">searchPeople without name</a></p>
+<p> people: <a href="/people">/people{?page,size,sort}</a> </p>
+<p> employee: <a href="/employee">employee{?page,size,sort}</a> </p>
+
+<p> existed employee: <a href="/employees/1">employee 1</a> </p>
+<p> unfound employee: <a href="/employees/20">employee 20</a> </p>
+<h2> management services by spring-boot-starter-actuator:</h2>
+<p> <a href="/actuator/health">actuator/health</a> </p>
+<p> <a href="/actuator/info">actuator/info</a> </p>
+<p> <a href="/actuator/shutdown">actuator/shutdown</a> </p>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style>
+<body>
+<h1>AngularJS AJAX - $http, table, select </h1>
+
+<div ng-app="myApp" ng-controller="myCtrl"> 
+
+<p>Today's welcome message is:</p>
+
+<p>Data : {{content}}</p>
+<p>Status : {{statuscode}}</p>
+<p>StatusText : {{statustext}}</p>
+
+<p>Dest Url: <input type="text" ng-model="destUrl" size=30> 
+	<button ng-click="checkUrl()" >check</button></p>
+    
+<p>Select a car:</p>
+
+<select ng-model="selectedCar">
+<option ng-repeat="x in cars" ng-value="{{x}}">{{x.model}}</option>
+</select>
+<h2>You selected: {{selectedCar.color}} - {{selectedCar.model}} </h2>
+
+<select ng-model="selectedCar2" ng-options="x.model for x in cars">
+</select>
+<h2>You selected: {{selectedCar2.color}} - {{selectedCar2.model}} </h2>
+
+<select ng-model="selectedCar3" ng-options="x for (x, y) in cars2">
+</select>
+<h2>You selected: {{selectedCar3.brand}} - {{selectedCar3.model}} - {{selectedCar3.color}} </h2>
+
+<p>click Table title to order:</p>
+<table>
+  <tr>
+    <th >No.</th>
+    <th ng-click="orderByMe('name')">Name</th>
+    <th ng-click="orderByMe('country')">Country</th>
+  </tr>
+  <tr ng-repeat="x in persons | orderBy:myOrderBy">
+    <td>{{ $index + 1 }}</td>
+    <td>{{ x.name }}</td>
+    <td>{{ x.country }}</td>
+  </tr>
+</table>
+
+<p>ng-if="$even", "$odd" :</p>
+<table>
+  <tr>
+    <th >No.</th>
+    <th ng-click="orderByMe('name')">Name</th>
+    <th ng-click="orderByMe('country')">Country</th>
+  </tr>
+  <tr ng-repeat="x in persons | orderBy:myOrderBy">
+    <td ng-if="$even" style="background-color:#00ffff">{{ $index + 1 }}</td>
+    <td ng-if="$odd">{{ $index + 1 }}</td>
+    
+    <td ng-if="$even" style="background-color:#00ffff">{{ x.name }}</td>
+    <td ng-if="$odd">{{ x.name }}</td>
+    
+    <td ng-if="$even" style="background-color:#00ffff">{{ x.country }}</td>
+    <td ng-if="$odd">{{ x.country }}</td>
+  </tr>
+</table>
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+            
+   $scope.persons = [
+    {name:'Jani',country:'Norway'},
+    {name:'Hege',country:'Sweden'},
+    {name:'Kai',country:'Denmark'}
+  ];
+  
+  $scope.orderByMe = function(x) {
+    $scope.myOrderBy = x;
+  };
+  
+  $scope.cars = [
+        {model : "Ford Mustang", color : "red"},
+        {model : "Fiat 500", color : "white"},
+        {model : "Volvo XC90", color : "black"}
+    ];
+    
+  $scope.cars2 = {
+        car01 : {brand : "Ford", model : "Mustang", color : "red"},
+        car02 : {brand : "Fiat", model : "500", color : "white"},
+        car03 : {brand : "Volvo", model : "XC90", color : "black"}
+    }
+	 
+	$scope.checkUrl = function() {
+		if (!$scope.destUrl)
+    		$scope.destUrl = "welcome.htm";
+	  $http({
+		method : "GET",
+		url : $scope.destUrl
+	  }).then(function mySuccess(response) {
+		  $scope.content = response.data;
+		  $scope.statuscode = response.status;
+		  $scope.statustext = response.statusText; 
+		  
+		}, function myError(response) {
+          $scope.content = "";
+          $scope.statuscode = response.status;
+		  $scope.statustext = response.statusText;
+	  });
+	};
+
+	$scope.checkUrl();  
+  
+});
+</script>
+
+</body>
+</html>

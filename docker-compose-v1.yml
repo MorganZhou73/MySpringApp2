@@ -1,0 +1,70 @@
+version: "3.0"
+services:
+  mongo-db:
+    container_name: mongodb_container
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_DATABASE=Northwind
+      - MONGO_INITDB_ROOT_USERNAME=user1
+      - MONGO_INITDB_ROOT_PASSWORD=V4321abcd!
+    ports:
+      - 27017-27019:27017-27019
+    volumes:
+      - ./docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./docker/mongo-volume:/data/db
+
+  sql-server-db:
+    build:
+      context: ./docker/
+      dockerfile: ./Dockerfile-mssql
+    container_name: sql-server-db
+    image: sql-testdb:tag-1.0.0
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_TCP_PORT: "1433"
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "V4321abcd!"
+      MSSQL_DB: "TestDB"
+      MSSQL_USER: user1
+      MSSQL_PASSWORD: "V4321abcd!"
+      
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+      
+  myservice2:
+    container_name: myservice2
+    build:
+      context: ./myservice2/
+      dockerfile: ./Dockerfile-v1
+    image: myservice2:tag-1.0.0
+    ports:
+      - 8081:8081
+    environment:
+      spring_data_mongodb_host: mongo-db
+      spring_rabbitmq_host: rabbitmq
+    depends_on:
+      - rabbitmq
+      - mongo-db
+      
+  myservice3:
+    container_name: myservice3
+    build:
+      context: ./myservice3/
+      dockerfile: ./Dockerfile-v1
+    image: myservice3:tag-1.0.0
+    ports:
+      - 8080:8080
+    environment:
+      sql-servername: sql-server-db
+      sql-db: "TestDB"
+      sql-username: "sa"
+      sql-password: "V4321abcd!"
+      spring_rabbitmq_host: rabbitmq
+    depends_on:
+      - rabbitmq
+      - sql-server-db

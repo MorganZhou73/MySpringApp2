@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style> 
+#div2, #flip {
+  padding: 5px;
+  text-align: center;
+  background-color: #e5eecc;
+  border: solid 1px #c3c3c3;
+}
+
+#div2 {
+  padding: 50px;
+  display: none;
+}
+</style>
+<script>
+$(document).ready(function(){
+  //  for all <p> elements, add click events
+  $("p").click(function(){
+		$(this).hide();
+  });
+  
+  $("#btn1").click(function(){
+    $("#test").hide();
+  });
+  
+  $("#btn2").click(function(){
+    $("#test").show();
+  });
+  
+  $("#btn3").click(function(){
+    $("p").toggle();
+  });
+  
+  $(".div1").hover(function(){
+    //alert("You entered div1!");
+    $("#msg1").text("You entered div1!");
+  },
+  function(){
+    $("#msg1").text("Bye! You now leave div1: " + $("#name").val());
+  });
+  
+  $("#flip").click(function(){
+    $("#div2").slideToggle("slow");
+  });
+});
+
+function appendText() {
+  var txt1 = "<b>I </b>";           // Create element with HTML
+  var txt2 = $("<i></i>").text("love ");  // Create with jQuery
+  var txt3 = document.createElement("b");   // Create with DOM
+  txt3.innerHTML = "jQuery!";
+  
+  //append() - Inserts content at the end of the selected elements
+  //prepend() - Inserts content at the beginning of the selected elements
+  //after() - Inserts content after the selected elements
+  //before() - Inserts content before the selected elements
+  $("#name").after(txt1, txt2, txt3);    // Insert new elements after id=name
+}
+</script>
+</head>
+<body>
+
+<h1>Basic Event Test </h1>
+<div id="flip">Click to slide the panel down or up</div>
+<br/>
+<div id="div2">
+<p id="p1">This is a paragraph.</p>
+<p>This is another paragraph.</p>
+
+<p id="test">This is test paragraph.</p>
+
+<button id="btn1">hide paragraphs</button>
+<button id="btn2">show paragraphs</button>
+<button id="btn3">toggle paragraphs</button>
+<br/>
+</div>
+<div class="div1"> this is div1 </div>
+<input type="text" id="name" value="Mickey Mouse">
+
+<div id="msg1"></div>
+<button onclick="appendText()">Append text</button>
+
+</body>
+</html>

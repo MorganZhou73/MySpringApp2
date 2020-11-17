@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script src="hello_angular.js"></script>
+</head>
+<body ng-app="myApp">
+
+<div ng-controller="Hello">
+ 
+	<p>Input something in the input box:</p>
+	<p>Name: <input type="text" ng-model="name"></p>
+	<p>Dest Url: <input type="text" ng-model="destUrl" size=30> 
+	<button ng-click="checkUrl()" >check</button></p>
+
+	<p ng-bind="name"></p>
+	<p ng-bind="destUrl"></p>
+
+	<div>
+    	Response: <br/>
+		<p>The ID is {{greeting.id}}</p>
+		<p>The content is {{greeting.content}}</p>
+        
+		<p>Data : {{greeting}}</p>
+		<p>Status : {{statuscode}}</p>
+		<p>StatusText : {{statustext}}</p>
+	</div>
+</div>
+<a href="home.html">home.html to test get/post request</a><br/>
+<a href="test1.html">test1.html</a><br/>
+<a href="test2.html">test2.html</a><br/>
+<a href="test3.html">test3.html</a><br/>
+<a href="test4.html">test4.html</a><br/>
+<a href="routing1.html">routing1.html</a><br/>
+<a href="myUsers.html">myUsers.html</a><br/>
+<a href="animation1.html">animation1.html</a><br/>
+ 
+</body>
+</html>

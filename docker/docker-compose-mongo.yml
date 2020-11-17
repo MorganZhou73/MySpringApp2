@@ -1,0 +1,14 @@
+version: "3.0"
+services:
+  mongo-db:
+    container_name: mongodb_container
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_DATABASE=Northwind
+      - MONGO_INITDB_ROOT_USERNAME=user1
+      - MONGO_INITDB_ROOT_PASSWORD=V4321abcd!
+    ports:
+      - 27017-27019:27017-27019
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/data/db

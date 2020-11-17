@@ -1,0 +1,14 @@
+version: "3.0"
+services:
+  sql-server-db:
+    container_name: sql-server-db
+    image: sql-testdb:tag-1.0.0
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_TCP_PORT: "1433"
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "V4321abcd!"
+      MSSQL_DB: "TestDB"
+      MSSQL_USER: user1
+      MSSQL_PASSWORD: "V4321abcd!"

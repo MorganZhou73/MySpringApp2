@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.ancestors * { 
+  display: block;
+  border: 2px solid lightgrey;
+  color: lightgrey;
+  padding: 5px;
+  margin: 15px;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+
+  $("#span1").parent().css({"color": "red", "border": "2px solid red"});
+  $("#span2").parents("ul").css({"color": "red", "border": "2px solid red"});
+  $("#span3").parentsUntil("div").css({"color": "red", "border": "2px solid red"});
+  
+  // similarly, .children("p.first")  ; .children() ; .find("span") for child elements
+  $("#div4").find("span").css({"color": "green", "border": "2px solid green"});
+  
+  // for siblings, use like .siblings("p") ; next() ; nextAll() ; prev()
+  // prevAll() ; prevUntil()
+  $("#il1").next().css({"color": "blue", "border": "2px solid blue"});
+  
+});
+</script>
+</head>
+<body>
+<h1>Traversing - Ancestors, Descendants</h1>
+
+<div class="ancestors"> div (great-grandparent)
+  <div style="width:500px;">div (great-grandparent)
+    <ul>ul (grandparent)  
+      <li id="il1">li 1 (direct parent)
+        <span id="span1">span 1</span>
+      </li>
+      
+      <li>li 2 : next sibling of li 1 </li>
+      
+      <li>li 3 </li>
+      <li>li 4 </li>
+    </ul>   
+  </div>
+
+  <div style="width:500px;">div (great-grandparent)
+    <ul>ul (grandparent)  
+      <li>li (direct parent)
+        <span id="span2">span 2</span>
+      </li>
+    </ul>   
+  </div>
+</div>
+
+<div class="ancestors" style="width:500px;">div (great-grandparent)
+    <ul>ul (grandparent)  
+      <li>li (direct parent)
+        <span id="span3">span 3</span>
+      </li>
+    </ul>   
+</div>
+
+<div class="ancestors" id="div4" style="width:500px;">div (current element) 
+  <p>p (child)
+    <span>span (grandchild)</span>   
+  </p>
+  <p>p (child)
+    <span>span (grandchild)</span>
+  </p> 
+</div>
+
+</body>
+</html>

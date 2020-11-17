@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<title>Send Request with jQuery</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+  $("#btn1").click(function(){
+    var filename = $("#file1").val();
+    
+    // $("#div1").load(filename);
+    $("#div1").load(filename, function(responseTxt, statusTxt, xhr){
+      if(statusTxt == "success")
+        $("#msg1").text("External content loaded successfully!");
+      if(statusTxt == "error")
+        $("#msg1").text("Error: " + xhr.status + ": " + xhr.statusText);
+    });
+  });
+  
+  function getDatatype(strData){
+	var strData1 = jQuery.trim(strData);
+    if(strData1.length >0) {
+      if(strData1.charAt(0) == '[' || strData1.charAt(0) == '{')
+          return ["json", "application/json"];
+
+      if(strData1.charAt(0) == '<')
+          return ["xml", "application/xml"];
+    }
+ 
+	return ["text", "text/plain"];  
+  }
+  
+  function getObject(strData){
+  	var strData1 = $.trim(strData);
+    if(strData1.length >0) {
+      if(strData1.charAt(0) == '[' || strData1.charAt(0) == '{'){
+          return jQuery.parseJSON(strData1);
+      }
+
+      if(strData1.charAt(0) == '<'){
+          return $.parseXML(strData1);
+      }
+    }
+    
+    return strData;
+  }
+  
+  function serializeXML(xmldom) {
+    if (typeof XMLSerializer != "undefined") {
+      return (new XMLSerializer()).serializeToString(xmldom);
+    } else if (typeof xmldom.xml != "undefined") {
+      return xmldom.xml;
+    } else {
+      throw new Error("Could not serialize XML DOM.");
+    }
+  }
+
+  function objectToString(obj){
+    var strRet;
+    if($.isXMLDoc(obj)){
+		strRet = serializeXML(obj);
+    } else if(typeof obj == 'object'){
+		strRet = JSON.stringify(obj);
+    } else {
+		strRet = obj;
+    }
+    
+  	return strRet;
+  }
+ 
+  $("#btn3").click(function(){
+    //var postData = { firstName: "John", lastName: "White" };
+	var postData = getObject($("#toPost").val());
+	var myType = getDatatype($("#toPost").val());
+	
+    $("#div1").text(myType[0] + "," + myType[1] + " : " + objectToString(postData));
+
+    $.post($("#destUrl").val(),
+    postData,
+    function(data,status){
+      $("#msg1").text("Data: " + objectToString(data) + "\nStatus: " + status);
+    });
+  });
+  
+  $("#btn4").click(function(){
+	var postData = $.trim($("#toPost").val());
+    var myType = getDatatype(postData);
+	var expectedType = $.trim($("#expectedType").val());
+	if(expectedType.length == 0)
+		expectedType = myType[0];
+		
+	$("#div1").text(myType[0] + ", " + myType[1]);
+	
+	$.ajax({
+      type: "POST",
+      url: $("#destUrl").val(),
+      data: postData,
+      success: function(data,status){
+        $("#msg1").text("Data: " + objectToString(data) + "\nStatus: " + status);
+      },
+      dataType: expectedType,
+      contentType: myType[1],
+      error: function (jqXHR, textStatus, errorThrown) {
+        $("#msg1").text("jqXHR: " + jqXHR + "\nStatus: " +         
+				textStatus + "\nError: " + errorThrown);
+      }
+    });
+  });
+  
+  $("#btn2").click(function(){
+    $.get($("#destUrl").val(), function(data, status){
+      $("#msg1").text("Data: " + objectToString(data) + "\nStatus: " + status);
+    });
+  });
+
+});
+</script>
+    </head>
+    <body>
+    <h1>Welcome! jQuery - myservice3</h1>
+
+    <p> <a href="/">sendrequest with AngularJS</a> </p>
+
+    <p> <a href="/users">Users and Orders</a> </p>
+
+    <p> employee: <a href="/employees">employee</a> </p>
+
+    <p> existed employee: <a href="/employees/1">employee 1</a> </p>
+    <p> unfound employee: <a href="/employees/20">employee 20</a> </p>
+
+<div id="div1"> Let jQuery AJAX Change This Text</div>
+
+file name: <input type="text" id="file1" value="demo_test.txt">
+<button id="btn1">Get External Content</button> <br/> <br/>
+
+<p>Url: <input type="text" id="destUrl"  size=80 value="/users" /> </p>
+<p>post data: <textarea id="toPost" cols="80" rows="5">{ "firstName": "John", "lastName": "White"}</textarea> </p>
+<p>expected data type (xml, json, script, text, html): <input type="text" id="expectedType"  size=10 value="text" /> </p>
+<button id="btn2">Send an HTTP GET request</button> 
+<button id="btn3">Send an HTTP POST request</button> 
+<button id="btn4">Send an HTTP POST 2</button> 
+<br/><br/>
+<div id="msg1"></div>
+		
+    </body>
+</html>

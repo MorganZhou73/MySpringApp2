@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>search people</title>
+<SCRIPT Language=JavaScript>
+function search()
+{
+    var url = "/employee";
+    if(lastname.value.length > 0)
+        url = "/employee/search/findByLastName?name=" + lastname.value;
+	window.open(url, "null");
+}
+</SCRIPT>
+
+</head>
+<body>
+This is search people page. search name: <span th:text="${name}" /> <br/>
+
+<div th:if="${name != ''}">
+    <a href="/employee" th:href="'/employee/search/findByLastName?name=' + ${name}">employee</a>
+</div>
+<div th:if="${name == ''}">
+    <a href="/employee">all employees</a>
+</div>
+
+     <br/>
+
+last name: <input type="text" id="lastname" name="lastname" size=9 value="" th:attr="value=${name}"/>
+
+<input type=button id="search" name="search" onclick="search()" value=search>
+
+</body>
+</html>

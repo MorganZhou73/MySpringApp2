@@ -1,0 +1,17 @@
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+*.sw?
+.#*
+*#
+*~
+*.sublime-*
+
+
+### Test ###
+backup
+client
+mongo-volume
+angularapp1-init
+SimpleNodeJS/node_modules

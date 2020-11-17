@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<style>
+input.ng-invalid {
+  background-color: lightblue;
+}
+</style>
+</head>
+<body >
+<h1>Validate User Input, Application Status, CSS Classes </h1>
+
+<div ng-app="app1" ng-init="myText= 'post@myweb.com'; text1='joe@'">
+<form name="myForm" >
+
+Email:
+<input type="email" name="myAddress" ng-model="myText" required>
+<p>Edit the e-mail address, and try to change the status.</p>
+<h1>Status</h1>
+<p>Valid: {{myForm.myAddress.$valid}} (if true, the value meets all criteria).</p>
+<p>Dirty: {{myForm.myAddress.$dirty}} (if true, the value has been changed).</p>
+<p>Touched: {{myForm.myAddress.$touched}} (if true, the field has been in focus).</p>
+
+</form>
+
+<form name="myForm2">
+  Email:
+  <input type="email" name="myAddress2" ng-model="text1">
+  <span ng-show="myForm2.myAddress2.$error.email">Not a valid e-mail address</span>
+</form>
+</div>
+
+<script>
+var app = angular.module('app1', []);
+
+</script>
+</body>
+</html>

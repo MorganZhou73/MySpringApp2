@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body ng-app="myApp" ng-controller="namesCtrl">
+<h1>Costomized Filter, Services </h1>
+<p>myUrl:  {{myUrl}}</p>
+<p>The time is:</p>
+<h2>{{theTime}}</h2>
+<p>The hexadecimal value of 255 is: {{hex1}} </p>
+
+<ul>
+<li ng-repeat="x in names">
+    {{x | myFormat}}
+</li>
+</ul>
+
+<ul>
+<li ng-repeat="x in counts">
+    {{x | myFormat2}}
+</li>
+</ul>
+
+<script>
+var app = angular.module('myApp', []);
+
+app.service('hexafy', function() {
+  this.myFunc = function (x) {
+    return x.toString(16);
+  }
+});
+
+app.filter('myFormat', function() {
+    return function(x) {
+        var i, c, txt = "";
+        for (i = 0; i < x.length; i++) {
+            c = x[i];
+            if (i % 2 == 0) {
+                c = c.toUpperCase();
+            }
+            txt += c;
+        }
+        return txt;
+    };
+});
+
+app.filter('myFormat2',['hexafy', function(hexafy) {
+    return function(x) {
+        return hexafy.myFunc(x);
+    };
+}]);
+
+app.controller('namesCtrl', function($scope, $location, $interval, hexafy) {
+    $scope.names = [
+        'Jani', 'Carl', 'Margareth', 'Hege', 'Joe',
+        'Gustav', 'Birgit', 'Mary', 'Kai'
+        ];
+        
+    $scope.myUrl = $location.absUrl();
+    $scope.hex1 = hexafy.myFunc(255);  
+    $scope.counts = [255, 251, 200];
+    
+    $scope.theTime = new Date().toLocaleTimeString();
+    
+  $interval(function () {
+      $scope.theTime = new Date().toLocaleTimeString();
+  }, 1000);
+});
+</script>
+
+<p>Make your own filters.</p>
+<p>This filter, called "myFormat", will uppercase every other character.</p>
+</body>
+</html>
