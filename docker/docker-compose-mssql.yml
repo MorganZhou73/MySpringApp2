@@ -1,6 +1,9 @@
 version: "3.0"
 services:
   sql-server-db:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-mssql
     container_name: sql-server-db
     image: sql-testdb:tag-1.0.0
     ports:

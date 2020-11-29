@@ -1,6 +1,10 @@
+db = db.getSiblingDB("Northwind");
 db.createUser(
   {
-    user: "$MONGO_INITDB_ROOT_USERNAME",
-    pwd: "$MONGO_INITDB_ROOT_PASSWORD",
-    roles: [ { role: "readWrite", db: "$MONGO_INITDB_DATABASE" } ]
+    user: "user1",
+    pwd: "V4321abcd!",
+    roles: [ 
+	{ role: "readWrite", db: "Northwind" } 
+	]
   });
+db.createCollection("person");
