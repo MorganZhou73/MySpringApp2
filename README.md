@@ -25,6 +25,9 @@
 
 	\SimpleNodeJS:
 		simple web to test NodeJS 
+		to start server:
+			node myfirst.js
+			; then you can access http://localhost:8080/  -- the port is specified in the .js
 		
 	\angularapp1: 
 		Spring Boot with Angular 
@@ -45,6 +48,8 @@
 	1. compile myservice2 to generate target/*.jar from Command window
 		cd ./myservice2
 		mvn clean package -Dmaven.test.skip=true
+			-- or 
+		mvn clean package -DskipTests
 		cd ..
 	
 	2. compile myservice3 to generate target/*.jar from Command window
@@ -58,7 +63,10 @@
 	then, we can test 
 		myservice2 : http://localhost:8081/
 		myservice3 : http://localhost:8080/
-		
+	
+	; delete all the relative containers, but the docker images remains
+	docker-compose -f docker-compose.yml down
+	
 -------------------------------------------------------------------------
 ## Clean the relative containers and images in docker
 
@@ -106,6 +114,13 @@ mvn -Dtest=TestApp1,TestApp2 test
 mvn -Dtest=TestApp1#methodname test
 
 -------------------------------------------------------------------------
+## Test RabbitMQ on Docker Seperately
+	docker pull rabbitmq:3-management-alpine
+	docker run --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management-alpine
+	
+	docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management-alpine
+
+-------------------------------------------------------------------------
 ## Test MongoDB on Docker Seperately
 
 	cd ./docker
@@ -122,14 +137,18 @@ mvn -Dtest=TestApp1#methodname test
 	; login to the container from Git Bash
 	winpty docker exec -it mongodb_container bash
 	
-	; then could login to mongoDB 
-	mongo -u "user1" -p "V4321abcd!" --authenticationDatabase "admin"
+	; then could login to mongoDB: the db user name should be different with the root user name for Docker test
+	mongo -u "root" -p "V4321abcd!" --authenticationDatabase "admin"
+	mongo -u "user1" -p "V4321abcd!" --authenticationDatabase "Northwind"
 	
 	use admin
 	show users;
 	show dbs;
 
 	use Northwind
+	show users;
+	; should get like { "_id" : "Northwind.user1", ...} ; otherwise, may fail for the mongo Docker test
+	
 	show collections 
 	db.person.find()
 	db.person.save({"firstName":"Joe", "lastName":"Zhou"})	
@@ -137,7 +156,19 @@ mvn -Dtest=TestApp1#methodname test
 	; to remove the container from docker
 	docker stop mongodb_container
 	docker rm mongodb_container
+	
+	docker-compose -f docker-compose-mongo.yml down
 
+	docker logs mongodb_container | grep error
+	db = db.getSiblingDB("Northwind");
+	
+	; view javascript file in mongo container
+	cat /docker-entrypoint-initdb.d/init-mongo.js
+	
+	;Execute a JavaScript file:
+	load("/docker-entrypoint-initdb.d/init-mongo.js")
+	
+	; we can also use Robo 3T to verify the DB
 -------------------------------------------------------------------------
 ## Both postgres and mysql images already support using environment variable 
    to create an initial database when the image is run and the container is 
@@ -182,6 +213,8 @@ mvn -Dtest=TestApp1#methodname test
 	
 	docker ps -a
 	docker image ls
+	
+	; we can also use Azure Data Studio to verify the DB
 
 -------------------------------------------------------------------------
 ## Make images for myservice2 / myservice3
