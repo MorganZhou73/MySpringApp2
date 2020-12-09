@@ -4,7 +4,10 @@
 ## Guides
 	
 	\Docker
-		Demo docker-compose to initiate MongoDB/SqlServer in Docker
+		Demo docker-compose to initiate MongoDB/SqlServer/MySql/Kafka in Docker
+		
+	\myservice1: Spring accessing MySql, 
+		send/receive message from Kafka
 		
 	\myservice2: Spring RESTfull Web Service accessing MongoDB
 		to demo Spring MVC, WebSecurityConfigurerAdapter
@@ -37,12 +40,13 @@
 
 -------------------------------------------------------------------------
 ## How to Run on Docker
-  - Approch 1: 
-  	use docker-compose to build myservice2/myservice3 from Docker automaticaly, this needs to pull maven.
+ 
+ - Approch 1 for myservice2/myservice3: 
+  	use docker-compose to build myservice2/myservice3 from Docker automatically, this needs to pull maven.
   
 	docker-compose -f docker-compose-v1.yml up -d
 
-  - Approch 2: 
+  - Approch 2 for myservice2/myservice3: 
 	build myservice2/myservice3 locally at first, so no need to pull maven:
 	
 	1. compile myservice2 to generate target/*.jar from Command window
@@ -88,6 +92,9 @@ docker rm sql-server-db
 docker image rm myservice2:tag-1.0.0
 docker image rm myservice3:tag-1.0.0
 docker image rm sql-testdb:tag-1.0.0
+
+; to find network of a container
+docker inspect sql-server-db -f "{{json .NetworkSettings.Networks }}"
 
 -------------------------------------------------------------------------
 ## Compile commands
@@ -229,5 +236,125 @@ mvn -Dtest=TestApp1#methodname test
 		mvn clean package
 		docker build -t myservice3:tag-1.0.0 .
 
+-------------------------------------------------------------------------
+## Managing MySql on Docker
+	https://dev.mysql.com/doc/refman/8.0/en/docker-mysql-getting-started.html
+	https://hub.docker.com/_/mysql
+	
+	docker pull mysql/mysql-server:latest
+	docker pull mysql:8.0.20
+		; -- or download the .tar, then
+	docker load -i mysql-enterprise-server-version.tar
+
+	; launch the image as container
+	docker-compose -f docker-compose-mysql.yml up -d
+		; --- or
+	docker run --name=mysql1 -e MYSQL_ROOT_PASSWORD='V4321abcd!' -d mysql/mysql-server:latest
+	docker run -p 3306:3306 --name=mysql1 -e MYSQL_ROOT_PASSWORD='V4321abcd!' -e MYSQL_DATABASE='MyDB' -e MYSQL_USER='user1' -e MYSQL_PASSWORD='V4321abcd!' -d mysql/mysql-server:latest
+	
+	docker run -p 3306:3306 --name=mysql1 -e MYSQL_ROOT_PASSWORD='V4321abcd!' -e MYSQL_DATABASE='MyDB' -e MYSQL_USER='user1' -e MYSQL_PASSWORD='V4321abcd!' -d mysql:8.0.20
+	
+	; Connecting to MySQL Server from within the Container in PowerShell window
+	; while in GitBash window, need add winpty
+	winpty docker exec -it mysql1 mysql --user=root --password='V4321abcd!'
+	winpty docker exec -it mysql1 mysql --user=user1 --password='V4321abcd!'
+ 	
+	docker logs mysql1
+	
+	; check the password of ROOT user if not set from environment from GitBash  
+	docker logs mysql1 2>&1 | grep GENERATED
+		-- [Entrypoint] GENERATED ROOT PASSWORD: *Id,yGuHj4Puh4vuw60lUf+OtAw
+	
+	; check docker container ip
+	docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql1
+	docker inspect mysql1 | grep "IPAddress"
+	
+	docker exec -it mysql1 bash	
+	docker exec -it mysql1 mysql -uroot -p '*Id,yGuHj4Puh4vuw60lUf+OtAw'
+	
+	; change root password if not set MYSQL_ROOT_PASSWORD from docker run 
+	ALTER USER 'root'@'localhost' IDENTIFIED BY 'V4321abcd!';
+	
+	SELECT VERSION(), CURRENT_DATE, user();
+	SHOW DATABASES;
+	select host, user from mysql.user;
+	update mysql.user set host = '%' where user='root';
+	
+	use mysql;
+	show tables;
+	
+	docker restart mysql1
+	docker inspect mysql1
+	docker port mysql1 3306
+	
+	docker stop mysql1
+	docker rm mysql1
+	docker start mysql1
+   
+	; we can use MySQL Workbench to check the DB
+	https://dev.mysql.com/downloads/workbench/
+-------------------------------------------------------------------------
+## Managing Kafka on Docker
+	https://docs.spring.io/spring-kafka/reference/html/#introduction
+	https://rmoff.net/2018/08/02/kafka-listeners-explained/
+	https://github.com/rmoff/kafka-listeners
+	
+	docker-compose -f docker-compose-kafka.yml up -d
+	
+	1. Producer Side
+	docker exec -it kafka1 bash
+	
+	; To create a new topic named test
+	kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test
+	 
+	; To start a producer that publishes datastream from standard input to kafka
+	kafka-console-producer.sh --broker-list localhost:9092 --topic test
+
+	2. Consumer side
+	; from another window : GitBash
+	winpty docker exec -it kafka1 bash
+	kafka-console-consumer.sh --bootstrap-server kafka1:29092 --topic test
+	
+	; listen a new topic from new window (use INTERNAL listener, default is localhost:9092)
+	kafka-console-consumer.sh --bootstrap-server kafka1:29092 --topic message-topic
+	kafka-console-consumer.sh --bootstrap-server kafka1:29092 --topic post-topic
+	
+	; press Ctrl+C to exit the listener
+	
+	3. from Producer Side window, input a message string; press Enter key,
+	   then in Consumer side window, you will see the message.
+	
+	// Print out the topics
+	kafka-topics.sh --bootstrap-server kafka1:29092 --list
+	kafka-topics.sh --bootstrap-server :9092 --list
+	
+	// Describe topic t1
+	kafka-topics.sh --bootstrap-server :9092 --describe --topic test
+
+### Config of Kafka
+	# There are three listeners: 
+	# INTERNAL: for internal traffic on the Docker network
+	# EXTERNAL: for traffic from the Docker-host machine (localhost)
+	# DOMAIN1 for traffic from outside, reaching the Docker host on the DNS name 'dns1'
+  kafka1:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+      - "29094:29094"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://kafka1:29092,EXTERNAL://kafka1:9092,DOMAIN1://kafka1:29094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:29092,EXTERNAL://localhost:9092,DOMAIN1://dns1:29094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOMAIN1:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+		
+	. LISTENERS are what interfaces Kafka binds to. ADVERTISED_LISTENERS are how clients can connect.
+	. KAFKA_LISTENERS is a comma-separated list of listeners, and the host/ip and port to which Kafka binds to on which to listen. For more complex networking this might be an IP address associated with a given network interface on a machine. The default is 0.0.0.0, which means listening on all interfaces.
+	. KAFKA_ADVERTISED_LISTENERS is a comma-separated list of listeners with their the host/ip and port. This is the metadata that's passed back to clients.
+	. KAFKA_LISTENER_SECURITY_PROTOCOL_MAP defines key/value pairs for the security protocol to use, per listener name.	
 -------------------------------------------------------------------------
    	  

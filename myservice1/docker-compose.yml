@@ -7,6 +7,19 @@ networks:
     name: net-mysql
     
 services:
+  mysql1:
+    image: mysql:8.0.20
+    container_name: mysql1
+    ports:
+      - 3306:3306
+    networks:
+      - net-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "V4321abcd!"
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: "V4321abcd!"
+      MYSQL_DATABASE: "MyDB"
+
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
@@ -41,3 +54,24 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOMAIN1:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       ALLOW_PLAINTEXT_LISTENER: "yes"
+      
+  myservice1:
+    container_name: myservice1
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: myservice1:tag-1.0.0
+    ports:
+      - 8082:8082
+    networks:
+      - net-mysql
+    environment:
+      KAFKA_URI: kafka1:29092
+      mysql-servername: mysql1
+      mysql-db: "MyDB"
+      spring_datasource_username: "user1"
+      spring_datasource_password: "V4321abcd!"
+      # spring_datasource_url: jdbc:mysql://${mysql-servername}:3306/${mysql-db}?useSSL=false
+    depends_on:
+      - kafka1
+      - mysql1

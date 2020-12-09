@@ -1,0 +1,40 @@
+# this setting is OK when Kafka is in Docker container with a client running locally
+# but not work when both Kafka and client in Docker container
+version: "3.0"
+
+networks:
+  net-mysql:
+    name: net-mysql
+    
+services:
+  mysql1:
+    image: mysql:8.0.20
+    container_name: mysql1
+    ports:
+      - 3306:3306
+    networks:
+      - net-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "V4321abcd!"
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: "V4321abcd!"
+      MYSQL_DATABASE: "MyDB"
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    networks:
+      - net-mysql
+  
+  kafka1:
+    image: wurstmeister/kafka
+    container_name: kafka1
+    ports:
+      - "9092:9092"
+    networks:
+      - net-mysql
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
