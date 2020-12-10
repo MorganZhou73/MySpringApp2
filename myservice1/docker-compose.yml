@@ -71,7 +71,7 @@ services:
       mysql-db: "MyDB"
       spring_datasource_username: "user1"
       spring_datasource_password: "V4321abcd!"
-      # spring_datasource_url: jdbc:mysql://${mysql-servername}:3306/${mysql-db}?useSSL=false
+      spring_datasource_url: jdbc:mysql://mysql1:3306/MyDB?useSSL=false&allowPublicKeyRetrieval=true
     depends_on:
       - kafka1
       - mysql1
