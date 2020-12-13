@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
+    environment {
+        String serenityResult = "1"
+        String dockerImageTag = "development"
+        String serenityTestTag = "development"
+        String artifactoryImageStr = ""
+        String serviceName = "${env.SERVICE_NAME}"
+    }
+
+    stages {
+        stage('Preparation') {
+
+            steps {
+                script {
+                    if ("${env.Tag}" != "") {
+                        dockerImageTag = "${env.Tag}"
+                        sh "echo latest git tag ${dockerImageTag} is being checked out"
+                        //sh "/usr/bin/git checkout tags/${dockerImageTag}"
+                    }
+                }
+				
+                // Get code from a GitHub repository
+                git 'https://github.com/MorganZhou73/MySpringApp2.git'
+				
+				// buid and run MySql and kafka for unit test
+				sh "cd MySpringApp2/myservice1"
+                sh "docker-compose -f docker-compose-v1.yml build"
+            }
+        }
+
+        stage('Build and Unit Test') {
+            steps {
+                //sh "cd MySpringApp2/myservice1"
+				//sh "mvn clean package -DskipTests"
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+				
+                sh "docker-compose -f docker-compose.yml build"
+                //sh "docker-compose -f docker-compose.yml up -d"
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    junit 'MySpringApp2/myservice1/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+    }
+}
