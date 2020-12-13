@@ -33,11 +33,12 @@ mysql> select * from comments;
 	cd ./myservice1	
 	mvn clean package -DskipTests
 	
+	docker-compose -f docker-compose.yml build
 	docker-compose -f docker-compose.yml up -d
 	; then, go to http://localhost:8082/ which has links to send messages
 	
 	; if the website is not started, check MySql DB:
-	  (from docker logs myservice1 :
+	  (e.g. from docker logs myservice1 :
      org.hibernate.exception.GenericJDBCException: Unable to open JDBC Connection for DDL execution)
 	  
 		winpty docker exec -it mysql1 mysql --user=user1 --password='V4321abcd!'
@@ -50,17 +51,24 @@ mysql> select * from comments;
    == Test with 	
 	1. load the MySql and Kafka compose to container and run (from either Command window or PowerShell )
 		; docker-compose-v0.yml is ok when Kafka is in Docker container and debug/run myservice1 from IntelliJ
-		docker-compose -f docker-compose-v0.yml up -d
-	
-	2. check MySql DB (if skip this step, the unit test of myservice1 may fail??)
+		
+		git clone https://github.com/MorganZhou73/MySpringApp2.git
+		cd MySpringApp2\myservice1
+		docker-compose -f docker-compose-v1.yml up -d
+		
+	2. check MySql DB (optional)
 		winpty docker exec -it mysql1 mysql --user=user1 --password='V4321abcd!'
 		show databases;
 	
 	3. compile/run myservice1 to generate target/*.jar from GitBash
 		cd ./myservice1
 		
+		mvn clean package
+	
 		mvn clean package -DskipTests
-		; mvn clean package
+		
+		mvn test
+		
 		; Run the unit tests to initiate MySql and topics of Kafka.
 		mvn -Dtest=Myservice1ApplicationTests test
 
@@ -94,10 +102,8 @@ mysql> select * from comments;
 		
 		; make image for myservice3:tag-1.0.0
 		docker build -t myservice1:tag-1.0.0 .
-
-		docker run --network myservice1_net-mysql -e "mysql-servername=mysql1" -e "kafka-servername=kafka1" -p 8082:8082 --name myservice1 -d myservice1:tag-1.0.0
 		
-		docker run -e "mysql-servername=mysql1" -e "kafka-servername=kafka1" -p 8082:8082 --name myservice1 -d myservice1:tag-1.0.0
+		docker run --network net-mysql  -e "KAFKA_URI=kafka1:29092" -e "mysql-servername=mysql1" -e "mysql-db=MyDB" -e "spring_datasource_username=user1" -e "spring_datasource_password=V4321abcd!" -e "spring_datasource_url=jdbc:mysql://mysql1:3306/MyDB?useSSL=false&allowPublicKeyRetrieval=true" -p 8082:8082 --name myservice1 -d myservice1:tag-1.0.0
 		
 		https://www.javainuse.com/devOps/docker/docker-mysql
 		https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b

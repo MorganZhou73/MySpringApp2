@@ -357,4 +357,22 @@ mvn -Dtest=TestApp1#methodname test
 	. KAFKA_ADVERTISED_LISTENERS is a comma-separated list of listeners with their the host/ip and port. This is the metadata that's passed back to clients.
 	. KAFKA_LISTENER_SECURITY_PROTOCOL_MAP defines key/value pairs for the security protocol to use, per listener name.	
 -------------------------------------------------------------------------
+## simulate Jekins pipeline steps for myservice1
+
+	git clone https://github.com/MorganZhou73/MySpringApp2.git
+	cd MySpringApp2\myservice1
+	
+	docker-compose -f docker-compose-v1.yml up -d
+	
+	mvn -Dmaven.test.failure.ignore=true clean package
+	//mvn clean package -DskipTests
+	//mvn test
+	
+	docker-compose -f docker-compose.yml up -d
+	
+	// docker build -t myservice1:tag-1.0.0 .
+	// docker run --network net-mysql  -e "KAFKA_URI=kafka1:29092" -e "mysql-servername=mysql1" -e "mysql-db=MyDB" -e "spring_datasource_username=user1" -e "spring_datasource_password=V4321abcd!" -e "spring_datasource_url=jdbc:mysql://mysql1:3306/MyDB?useSSL=false&allowPublicKeyRetrieval=true" -p 8082:8082 --name myservice1 -d myservice1:tag-1.0.0
+
+	
+-------------------------------------------------------------------------
    	  
