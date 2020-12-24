@@ -6,16 +6,17 @@
 	<artifactId>myspringapp2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Spring service with Angular app</name>
+	<name>Spring services demo</name>
 
 	<modules>
 		<module>angularapp1</module>
+		<module>myservice1</module>
 		<module>myservice2</module>
+		<module>myservice3</module>
 	</modules>
 
 	<build>
       <plugins>
       </plugins>
     </build>
-
 </project>

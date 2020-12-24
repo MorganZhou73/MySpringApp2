@@ -11,7 +11,7 @@
 	<groupId>com.unistar</groupId>
 	<artifactId>myservice2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Myservice2</name>
+	<name>MyService2</name>
 	<description>Myservice2 project for Spring Boot</description>
 
 	<properties>

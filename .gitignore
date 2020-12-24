@@ -8,6 +8,11 @@ Thumbs.db
 *~
 *.sublime-*
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
 ### Test ###
 backup

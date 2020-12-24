@@ -1,8 +1,10 @@
-# for kompose convert: not support "network": 
-# 	https://github.com/kubernetes/kompose/blob/master/docs/conversion.md
 # this Kafka Docker setting is to support a client myservice1 in Docker container, 
 # also to support myservice1 running locally (on Docker-host machine: localhost)
 version: "3.0"
+
+networks:
+  net-mysql:
+    name: net-mysql
     
 services:
   mysql1:
@@ -10,6 +12,8 @@ services:
     container_name: mysql1
     ports:
       - 3306:3306
+    networks:
+      - net-mysql
     environment:
       MYSQL_ROOT_PASSWORD: "V4321abcd!"
       MYSQL_USER: user1
@@ -21,6 +25,8 @@ services:
     container_name: zookeeper
     ports:
       - "2181:2181"
+    networks:
+      - net-mysql
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -36,6 +42,8 @@ services:
     ports:
       - "9092:9092"
       - "29094:29094"
+    networks:
+      - net-mysql
     depends_on:
       - zookeeper
     environment:
@@ -55,6 +63,8 @@ services:
     image: myservice1:tag-1.0.0
     ports:
       - 8082:8082
+    networks:
+      - net-mysql
     environment:
       KAFKA_URI: kafka1:29092
       mysql-servername: mysql1

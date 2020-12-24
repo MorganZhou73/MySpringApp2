@@ -11,7 +11,7 @@
 	<groupId>com.unistar</groupId>
 	<artifactId>myservice1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>myservice1</name>
+	<name>MyService1</name>
 	<description>Access MySQL and Kafka in Spring Boot</description>
 
 	<properties>

@@ -11,7 +11,7 @@
 	<groupId>com.unistar</groupId>
 	<artifactId>angularapp1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>AngularApp1</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
