@@ -236,6 +236,23 @@ mvn -Dtest=TestApp1#methodname test
 		mvn clean package
 		docker build -t myservice3:tag-1.0.0 .
 
+### Push to Docker hub https://hub.docker.com/
+		cd ./myservice1
+		docker build -t zmg9046/myservice1:tag-1.0.0 .
+		cd ../myservice2
+		docker build -t zmg9046/myservice2:tag-1.0.0 .
+		cd ../myservice3
+		docker build -t zmg9046/myservice3:tag-1.0.0 .
+
+		docker login
+		docker push zmg9046/myservice1:tag-1.0.0
+		docker push zmg9046/myservice2:tag-1.0.0
+		docker push zmg9046/myservice3:tag-1.0.0
+
+	; to remove the image from hub.docker via command line
+	curl -X DELETE -u "$user:$pass" https://hub.docker.com/repository/docker/zmg9046/test
+
+	
 -------------------------------------------------------------------------
 ## Managing MySql on Docker
 	https://dev.mysql.com/doc/refman/8.0/en/docker-mysql-getting-started.html

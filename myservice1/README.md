@@ -118,6 +118,14 @@ mysql> select * from comments;
 		docker stop myservice1
 		docker rm myservice1
 
-### Guides
- 
-
+### Push to Docker hub https://hub.docker.com/
+		docker build -t zmg9046/myservice1:tag-1.0.0 .
+		
+		docker run --network net-mysql  -e "KAFKA_URI=kafka1:29092" -e "mysql-servername=mysql1" -e "mysql-db=MyDB" -e "spring_datasource_username=user1" -e "spring_datasource_password=V4321abcd!" -e "spring_datasource_url=jdbc:mysql://mysql1:3306/MyDB?useSSL=false&allowPublicKeyRetrieval=true" -p 8082:8082 --name myservice1 -d zmg9046/myservice1:tag-1.0.0
+		
+		docker login
+			; input the user account /password to https://hub.docker.com/ 
+			
+		docker push zmg9046/myservice1:tag-1.0.0
+		
+		

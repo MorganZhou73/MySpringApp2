@@ -1,4 +1,6 @@
 # My Spring RESTfull Web Service accessing Mongo DB, WebSecurityConfig
+		to demo Spring MVC, WebSecurityConfigurerAdapter, healthcheck
+		receive message from RabbitMQ, and save to MongoDB
 
 http://localhost:8080/
     GreetingController: RESTfull Web Service, CrossOrigin, (/greeting )
@@ -103,6 +105,91 @@ curl localhost:8080/actuator/info
 curl -X POST localhost:8080/actuator/shutdown
 
 curl -X POST -H "Content-Type:application/json" -d "{ \"id\" : \"content\" }" http://localhost:8080/people
+
+curl localhost:8080/healthcheck?format=short -v
+curl localhost:8080/healthcheck?format=full -v
+curl localhost:8080/healthcheck -v
+
+D:\Temp>curl localhost:8080/healthcheck
+{
+  "timestamp" : "2021-01-13T15:39:17.662+00:00",
+  "status" : 400,
+  "error" : "Bad Request",
+  "message" : "",
+  "path" : "/healthcheck"
+}
+
+D:\Temp>curl localhost:8080/healthcheck?format=full -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+> GET /healthcheck?format=full HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.55.1
+> Accept: */*
+>
+< HTTP/1.1 200
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Wed, 13 Jan 2021 22:39:10 GMT
+<
+{
+  "currentTime" : "2021-01-13T22:39:10Z",
+  "application" : "OK"
+}* Connection #0 to host localhost left intact
+
+D:\Temp>curl localhost:8080/healthcheck1?format=full -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+> GET /healthcheck1?format=full HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.55.1
+> Accept: */*
+>
+< HTTP/1.1 200
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Wed, 13 Jan 2021 22:39:39 GMT
+<
+{
+  "currentTime" : "2021-01-13T22:39:39Z",
+  "application" : "OK"
+}* Connection #0 to host localhost left intact
+
+D:\Temp>curl localhost:8080/healthcheck2?format=full -v
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+> GET /healthcheck2?format=full HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.55.1
+> Accept: */*
+>
+< HTTP/1.1 200
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: application/json
+< Content-Length: 63
+< Date: Wed, 13 Jan 2021 22:49:41 GMT
+<
+{"currentTime":"2021-01-13T22:49:41.768Z", "application": "OK"}* Connection #0 to host localhost left intact
 
 ##--------------------------------------------------
 ## query for all people

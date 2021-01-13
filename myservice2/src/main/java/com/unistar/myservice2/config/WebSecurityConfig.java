@@ -45,7 +45,7 @@ public class WebSecurityConfig {
 					// disabling csrf here, you should enable it before using in production
 					.csrf().disable()
 					.authorizeRequests()
-					.antMatchers("/", "/home").permitAll()
+					.antMatchers("/", "/home", "/healthcheck*").permitAll()
 					.antMatchers("/hello").permitAll()
 					.antMatchers("/greeting", "/greeting-javaconfig").permitAll()
 					//.antMatchers("/people", "/people/**").permitAll()
