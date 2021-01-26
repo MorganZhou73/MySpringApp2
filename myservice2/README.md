@@ -3,7 +3,7 @@
 		receive message from RabbitMQ, and save to MongoDB
 
 http://localhost:8080/
-    GreetingController: RESTfull Web Service, CrossOrigin, (/greeting )
+    GreetingController: RESTfull Web Service, CrossOrigin, (/greeting ; /greeting1/{name} )
         sendmessage in String/Json/Xml/Map demo (/sendmessage ;  /sendmessagemap )
             https://spring.io/guides/gs/rest-service/
             https://spring.io/guides/gs/rest-service-cors/
@@ -97,6 +97,11 @@ D:\Temp>curl "http://localhost:9000/greeting-javaconfig" -H "Origin: http://loca
 ##--------------------------------------------------
 ## curl Test in command window
 curl http://localhost:8080/greeting?name=morgan
+
+curl -c ./cookie01 -d "username=user1" -d "password=secret123" "http://localhost:8080/login"
+curl http://localhost:8080/greeting1/joe -b ./cookie01
+
+curl http://localhost:8080/greeting2 -b ./cookie01
 
 curl http://localhost:8080
 
@@ -219,7 +224,7 @@ curl -X POST -d "id=1&content=good morning" "http://localhost:8080/sendmessagema
 
 ### test content for jQuery in home2.html and AngularJS in home.html :
 Url:	/sendmessage
-Post data: 
+Post data: (button "Send an HTTP POST 2")
 	Good morning
 	{ "id": "2", "content": "good morning, buddy"}
 	<message><id>3</id><content>Good evening</content></message>
@@ -227,6 +232,13 @@ Post data:
 Url:	/people
 Post data: 
 	{ "firstName": "John", "lastName": "White"}
+
+Url:	/employees
+Post data: (button "Send an HTTP POST 2")
+	{ "employeeID": 101, "firstName": "Jack", "lastName":"Baggins", "title": "Sales Rep", "birthDate": "1972-01-23", "city": "Markham", "reportsTo": 2 }
+
+then can try
+	http://localhost:8080/employees/101
 	
 ### POST REST calls to create a new record in collection [person]; 
 ### if the collection not exist, create the collection [person] first. 

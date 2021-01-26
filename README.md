@@ -63,6 +63,9 @@
 
 	3. load the compose to container and run (from either Command window or PowerShell )
 		docker-compose -f docker-compose.yml up -d
+		
+		  -- or load and run myservice2 only:
+		docker-compose -f docker-compose-service2.yml up -d
 
 	then, we can test 
 		myservice2 : http://localhost:8081/

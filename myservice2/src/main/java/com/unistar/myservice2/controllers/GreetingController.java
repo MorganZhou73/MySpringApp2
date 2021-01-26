@@ -29,6 +29,16 @@ public class GreetingController {
 		return ret;
 	}
 
+	@GetMapping({"/greeting1", "/greeting1/{name}"})
+	public Greeting greeting1(@PathVariable(required = false) String name){
+		if(name == null)
+			name = "my kid";
+		
+		Greeting ret = new Greeting(counter.incrementAndGet(), String.format(TEMPLATE1, name));
+		System.out.println("== greeting1: " + ret.toString());
+		return ret;
+	}
+
 	@GetMapping("/greeting-javaconfig")
 	public Greeting greetingWithJavaconfig(@RequestParam(value = "name", defaultValue = "World") String name) {
 		Greeting ret = new Greeting(counter.incrementAndGet(), String.format(TEMPLATE1, name));
