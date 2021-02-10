@@ -19,7 +19,9 @@ node
 	}
 	stage("javaBuild") {
 		try {
+			sh 'cd ./myservice2'
 			sh 'mvn clean package -DskipTests' 
+			sh 'cd ..'
 			sh "echo 'javaBuild: Complete'"
 		}
 		catch(err) {
@@ -29,9 +31,10 @@ node
 	}
 	stage("UnitTest") {
 		try {
-			sh 'mvn test'			
-			junit 'target/surefire-reports/*.xml'
-			
+			//sh 'cd ./myservice2'
+			//sh 'mvn test'			
+			//junit 'target/surefire-reports/*.xml'
+			//sh 'cd ..'
 			sh "echo 'UnitTest: Complete'"
 		}
 		catch(err) {
