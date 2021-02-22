@@ -1,0 +1,67 @@
+node
+{
+	stage ("checkoutSCM") {
+		try{
+			checkout([
+			 $class: 'GitSCM',
+			 branches: scm.branches,
+			 doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+			 extensions: scm.extensions,
+			 userRemoteConfigs: scm.userRemoteConfigs
+			])
+
+			bat "echo 'checkoutSCM: complete'"
+		}
+		catch(err) {
+			bat "echo 'checkoutSCM: Failed' "
+			throw err
+		}
+	}
+	stage("javaBuild") {
+		try {
+			bat 'cd ./myservice2'
+			bat 'mvn clean package -DskipTests' 
+			bat 'cd ..'
+			bat "echo 'javaBuild: Complete'"
+		}
+		catch(err) {
+			bat "echo 'javaBuild: Failed'"
+			throw err
+		}
+	}
+	stage("UnitTest") {
+		try {
+			bat 'cd ./myservice2'
+			bat 'mvn test'			
+			junit 'target/surefire-reports/*.xml'
+			bat 'cd ..'
+			bat "echo 'UnitTest: Complete'"
+		}
+		catch(err) {
+			bat "echo 'UnitTest: Failed'"
+			junit 'target/surefire-reports/*.xml'
+			throw err
+		}		
+	}
+	stage("dockerBuild") {
+		try {
+			bat "docker build -t zmg9046/myservice2:tag-1.0.0 -f Dockerfile ."
+			bat "echo 'dockerBuild: Complete'"
+		}
+		catch(err) {
+			bat "echo 'dockerBuild: Failed'"
+			throw err
+		}
+	}	
+	stage("dockerDeploy") {
+		try {
+			// bat "docker run -p 9081:8081 --name helloservice -d zmg9046/myservice2:tag-1.0.0"
+			bat "docker-compose -f docker-compose-service2.yml up -d"
+			bat "echo 'dockerDeploy: Complete'"
+		}
+		catch(err) {
+			bat "echo 'dockerDeploy: Failed'"
+			throw err
+		}
+	}
+}
