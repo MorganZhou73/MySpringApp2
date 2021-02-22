@@ -9,7 +9,6 @@
 	<name>Spring services demo</name>
 
 	<modules>
-		<module>angularapp1</module>
 		<module>myservice1</module>
 		<module>myservice2</module>
 		<module>myservice3</module>
