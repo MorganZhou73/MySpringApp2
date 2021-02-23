@@ -31,7 +31,7 @@ public class WebSecurityConfig {
 					.requestMatchers().antMatchers("/greeting","/greeting-javaconfig")
 					.and()
 					.headers()
-					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "http://localhost:808*"));
+					.addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "http://localhost:8080"));
 		}
 	}
 

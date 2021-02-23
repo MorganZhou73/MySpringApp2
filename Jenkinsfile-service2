@@ -53,7 +53,7 @@ node
 	}	
 	stage("dockerDeploy") {
 		try {
-			// bat "docker run -p 9081:8081 --name helloservice -d zmg9046/myservice2:tag-1.0.0"
+			// bat "docker run -p 9081:8081 --name myservice2 -d zmg9046/myservice2:tag-1.0.0"
 			bat "docker-compose -f docker-compose-service2.yml up -d"
 			bat "echo 'dockerDeploy: Complete'"
 		}
