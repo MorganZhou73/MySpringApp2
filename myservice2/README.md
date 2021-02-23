@@ -52,7 +52,10 @@ java -jar target/myservice2-0.0.1-SNAPSHOT.jar --server.port=8080
 ./mvnw clean package -DskipTests
 ./mvnw clean package -Dmaven.test.skip=true
 
-### CrossOrigin Test
+### CrossOrigin Test : 
+  There can only be one Access-Control-Allow-Origin response header, and that header can only have one origin value. but we can use * for multiple domains:
+  https://stackoverflow.com/questions/17323350/access-control-allow-origin-with-multiple-domains
+  
 CD myservice2
 XCOPY ".\target\myservice2-0.0.1-SNAPSHOT.jar" "..\backup\" /S /Y
 

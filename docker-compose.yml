@@ -42,7 +42,7 @@ services:
     build:
       context: ./myservice2/
       dockerfile: ./Dockerfile
-    image: myservice2:tag-1.0.0
+    image: zmg9046/myservice2:tag-1.0.0
     ports:
       - 9081:8081
     environment:
@@ -57,7 +57,7 @@ services:
     build:
       context: ./myservice3/
       dockerfile: ./Dockerfile
-    image: myservice3:tag-1.0.0
+    image: zmg9046/myservice3:tag-1.0.0
     ports:
       - 9080:8080
     environment:

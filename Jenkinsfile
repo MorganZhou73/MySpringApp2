@@ -29,10 +29,8 @@ node
 	}
 	stage("UnitTest") {
 		try {
-			//bat 'cd ./myservice2'
 			//bat 'mvn test'			
 			//junit 'target/surefire-reports/*.xml'
-			//bat 'cd ..'
 			//bat "echo 'UnitTest: Complete'"
 		}
 		catch(err) {
@@ -42,8 +40,7 @@ node
 	}
 	stage("dockerBuild") {
 		try {
-			//bat "docker build -t zmg9046/myservice2:tag-1.0.0 -f Dockerfile ."
-			bat "docker-compose -f docker-compose-service2.yml build"
+			bat "docker-compose -f docker-compose.yml build"
 			bat "echo 'dockerBuild: Complete'"
 		}
 		catch(err) {
@@ -53,8 +50,7 @@ node
 	}	
 	stage("dockerDeploy") {
 		try {
-			// bat "docker run -p 9081:8081 --name helloservice -d zmg9046/myservice2:tag-1.0.0"
-			bat "docker-compose -f docker-compose-service2.yml up -d"
+			bat "docker-compose -f docker-compose.yml up -d"
 			bat "echo 'dockerDeploy: Complete'"
 		}
 		catch(err) {
