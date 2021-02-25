@@ -41,6 +41,9 @@
 -------------------------------------------------------------------------
 ## How to Run on Docker
  
+ - compile all myservice1/myservice2/myservice3
+	mvn clean package -DskipTests
+ 
  - Approch 1 for myservice2/myservice3: 
   	use docker-compose to build myservice2/myservice3 from Docker automatically, this needs to pull maven.
   
@@ -73,6 +76,10 @@
 	
 	; delete all the relative containers, but the docker images remains
 	docker-compose -f docker-compose.yml down
+	
+  - for myservice1: 
+	docker-compose -f ./myservice1/docker-compose.yml up -d
+	docker-compose -f ./myservice1/docker-compose.yml down
 	
 -------------------------------------------------------------------------
 ## Clean the relative containers and images in docker
@@ -344,6 +351,9 @@ mvn -Dtest=TestApp1#methodname test
 	3. from Producer Side window, input a message string; press Enter key,
 	   then in Consumer side window, you will see the message.
 	
+	kafka-console-producer.sh -broker-list localhost:9092 -topic message-topic
+    kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic message-topic --from-beginning --max-messages 10
+	
 	// Print out the topics
 	kafka-topics.sh --bootstrap-server kafka1:29092 --list
 	kafka-topics.sh --bootstrap-server :9092 --list
@@ -360,14 +370,14 @@ mvn -Dtest=TestApp1#methodname test
     image: wurstmeister/kafka
     ports:
       - "9092:9092"
-      - "29094:29094"
+      - "29092:29092"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: INTERNAL://kafka1:29092,EXTERNAL://kafka1:9092,DOMAIN1://kafka1:29094
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:29092,EXTERNAL://localhost:9092,DOMAIN1://dns1:29094
+      KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL://:29092,DOMAIN1://:29094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9092,EXTERNAL://localhost:29092,DOMAIN1://dns1:29094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOMAIN1:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
