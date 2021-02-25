@@ -60,7 +60,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    image: myservice1:tag-1.0.0
+    image: zmg9046/myservice1:tag-1.0.0
     ports:
       - 8082:8082
     networks:
