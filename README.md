@@ -41,10 +41,10 @@
 -------------------------------------------------------------------------
 ## How to Run on Docker
  
- - compile all myservice1/myservice2/myservice3
+  - compile all myservice1/myservice2/myservice3
 	mvn clean package -DskipTests
  
- - Approch 1 for myservice2/myservice3: 
+  - Approch 1 for myservice2/myservice3: 
   	use docker-compose to build myservice2/myservice3 from Docker automatically, this needs to pull maven.
   
 	docker-compose -f docker-compose-v1.yml up -d
@@ -53,32 +53,33 @@
 	build myservice2/myservice3 locally at first, so no need to pull maven:
 	
 	1. compile myservice2 to generate target/*.jar from Command window
-		cd ./myservice2
-		mvn clean package -Dmaven.test.skip=true
+		mvn clean package -f ./myservice2/pom.xml -Dmaven.test.skip=true
 			-- or 
-		mvn clean package -DskipTests
-		cd ..
+		mvn clean package -f ./myservice2/pom.xml -DskipTests
 	
 	2. compile myservice3 to generate target/*.jar from Command window
-		cd ./myservice3
-		mvn clean package -Dmaven.test.skip=true
-		cd ..
+		mvn clean package -f ./myservice3/pom.xml -DskipTests
 
 	3. load the compose to container and run (from either Command window or PowerShell )
 		docker-compose -f docker-compose.yml up -d
 		
-		  -- or load and run myservice2 only:
+		  -- or load and run myservice2/myservice3 only:
 		docker-compose -f docker-compose-service2.yml up -d
+		docker-compose -f docker-compose-service3.yml up -d
 
 	then, we can test 
-		myservice2 : http://localhost:8081/
-		myservice3 : http://localhost:8080/
+		myservice2 : http://localhost:9081/
+		myservice3 : http://localhost:9080/
 	
 	; delete all the relative containers, but the docker images remains
 	docker-compose -f docker-compose.yml down
 	
   - for myservice1: 
+	mvn clean package -f ./myservice1/pom.xml -DskipTests
+	
 	docker-compose -f ./myservice1/docker-compose.yml up -d
+	   ;then go to http://localhost:8082/ which has links to send messages 
+	   
 	docker-compose -f ./myservice1/docker-compose.yml down
 	
 -------------------------------------------------------------------------

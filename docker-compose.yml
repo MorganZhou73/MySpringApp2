@@ -69,3 +69,4 @@ services:
     depends_on:
       - rabbitmq
       - sql-server-db
+    entrypoint: bash ./wait-for-it.sh sql-server-db:1433 -t 120 -- java -jar myservice3.jar

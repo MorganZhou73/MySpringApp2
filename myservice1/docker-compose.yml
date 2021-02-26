@@ -9,7 +9,7 @@ services:
     image: mysql:8.0.20
     container_name: mysql1
     ports:
-      - "33006:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "V4321abcd!"
       MYSQL_USER: user1
@@ -65,3 +65,4 @@ services:
     depends_on:
       - kafka1
       - mysql1
+    entrypoint: bash ./wait-for-it.sh mysql1:3306 -t 180 -- java -jar myservice1.jar

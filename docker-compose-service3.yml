@@ -1,0 +1,44 @@
+version: "3.0"
+services:
+
+  sql-server-db:
+    build:
+      context: ./docker/
+      dockerfile: ./Dockerfile-mssql
+    container_name: sql-server-db
+    image: sql-testdb:tag-1.0.0
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_TCP_PORT: "1433"
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "V4321abcd!"
+      MSSQL_DB: "TestDB"
+      MSSQL_USER: user1
+      MSSQL_PASSWORD: "V4321abcd!"
+      
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+      
+  myservice3:
+    container_name: myservice3
+    build:
+      context: ./myservice3/
+      dockerfile: ./Dockerfile
+    image: zmg9046/myservice3:tag-1.0.0
+    ports:
+      - 9080:8080
+    environment:
+      sql-servername: sql-server-db
+      sql-db: "TestDB"
+      sql-username: "sa"
+      sql-password: "V4321abcd!"
+      spring_rabbitmq_host: rabbitmq
+    depends_on:
+      - rabbitmq
+      - sql-server-db
+    entrypoint: bash ./wait-for-it.sh sql-server-db:1433 -t 120 -- java -jar myservice3.jar
