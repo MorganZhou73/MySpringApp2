@@ -1,0 +1,14 @@
+dependencies:
+- name: mongodb
+  repository: file://./mongodb
+  version: 10.10.2
+
+- name: rabbitmq
+  repository: file://./rabbitmq
+  version: 8.11.3
+
+- name: service2chart
+  repository: file://./service2chart
+  version: 0.1.0
+digest: sha256:42682219337a6680e2d07821d700ce694328705f52a8dd9aa8e5bac602e53df9
+generated: "2020-03-02T09:57:44.10710911-05:00"

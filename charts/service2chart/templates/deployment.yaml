@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "service2chart.fullname" . }}
+  labels:
+    {{- include "service2chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "service2chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "service2chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: 'spring_data_mongodb_host'
+              value: {{ quote .Values.property.mongodb_host }}
+            - name: 'spring_data_mongodb_database'
+              value: {{ quote .Values.property.mongodb_database }}
+            - name: 'spring_data_mongodb_username'
+              value: {{ quote .Values.property.mongodb_username }}
+            - name: 'spring_data_mongodb_password'
+              value: {{ quote .Values.property.mongodb_password }}
+            - name: 'spring_rabbitmq_host'
+              value: {{ quote .Values.property.rabbitmq_host }}
+            - name: 'spring_rabbitmq_username'
+              value: {{ quote .Values.property.rabbitmq_username }}
+            - name: 'spring_rabbitmq_password'
+              value: {{ quote .Values.property.rabbitmq_password }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

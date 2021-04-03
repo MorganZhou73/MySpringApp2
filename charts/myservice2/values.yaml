@@ -1,0 +1,47 @@
+#tagStartsHere
+service2chart:
+  image:
+    tag:
+    pullPolicy: IfNotPresent 
+#tagFinishesHere
+# Default values for registry-runtime-dependencies.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 8081
+
+property:
+  mongodb_host: mongodb1
+  mongodb_database: "Northwind"
+  mongodb_username: "user1"
+  mongodb_password: "V4321abcd!"
+  rabbitmq_host: rabbitmq1
+  rabbitmq_username: user
+  rabbitmq_password: user1
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 400m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 700Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+

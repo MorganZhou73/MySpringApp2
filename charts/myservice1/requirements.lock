@@ -1,0 +1,14 @@
+dependencies:
+- name: mysql
+  repository: file://./mysql
+  version: 0.1.0
+
+- name: kafka
+  repository: file://./kafka
+  version: 12.11.0
+
+- name: service1chart
+  repository: file://./service1chart
+  version: 0.1.0
+digest: sha256:42682219337a6680e2d07821d700ce694328705f52a8dd9aa8e5bac602e53df9
+generated: "2020-03-02T09:57:44.10710911-05:00"

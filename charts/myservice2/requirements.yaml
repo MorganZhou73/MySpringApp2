@@ -1,0 +1,21 @@
+# !! File must end with empty line !!
+dependencies:
+- name: mongodb
+  repository: .
+  version: 10.10.2
+  alias: mongodb
+  tags:
+    - service2chart
+    - all
+
+- name: rabbitmq
+  repository: .
+  version: 8.11.3
+  alias: rabbitmq
+
+  # !! "alias: preview" must be last entry in dependencies array !!
+  # !! Place custom dependencies above !!
+- alias: service2chart
+  name: service2chart
+  repository: .
+  version: 0.1.0

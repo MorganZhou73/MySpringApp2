@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "service3chart.fullname" . }}
+  labels:
+    {{- include "service3chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "service3chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "service3chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: 'sql-servername'
+              value: {{ quote .Values.property.sql_servername }}
+            - name: 'sql-db'
+              value: {{ quote .Values.property.sql_db }}
+            - name: 'sql-username'
+              value: {{ quote .Values.property.sql_username }}
+            - name: 'sql-password'
+              value: {{ quote .Values.property.sql_password }}
+            - name: 'spring_rabbitmq_host'
+              value: {{ quote .Values.property.rabbitmq_host }}
+            - name: 'spring_rabbitmq_username'
+              value: {{ quote .Values.property.rabbitmq_username }}
+            - name: 'spring_rabbitmq_password'
+              value: {{ quote .Values.property.rabbitmq_password }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

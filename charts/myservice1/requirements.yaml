@@ -1,0 +1,21 @@
+# !! File must end with empty line !!
+dependencies:
+- name: kafka
+  repository: .
+  version: 12.11.0
+  alias: kafka
+  tags:
+    - service1chart
+    - all
+
+- name: mysql
+  repository: .
+  version: 0.1.0
+  alias: mysql
+
+  # !! "alias: preview" must be last entry in dependencies array !!
+  # !! Place custom dependencies above !!
+- alias: service1chart
+  name: service1chart
+  repository: .
+  version: 0.1.0

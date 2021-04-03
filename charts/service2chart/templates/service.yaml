@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "service2chart.fullname" . }}
+  labels:
+    {{- include "service2chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "service2chart.selectorLabels" . | nindent 4 }}
+  #loadBalancerIP only works if it is supported by cloud provider otherwise it is ignored
+  {{- if .Values.service.loadBalancerStaticIpEnabled }}
+  loadBalancerIP: {{ .Values.service.loadBalancerStaticIp }}
+  {{- end }}
+  

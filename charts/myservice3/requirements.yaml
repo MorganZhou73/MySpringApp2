@@ -1,0 +1,21 @@
+# !! File must end with empty line !!
+dependencies:
+- name: mssql
+  repository: .
+  version: 0.1.0
+  alias: mssql
+  tags:
+    - service3chart
+    - all
+
+- name: rabbitmq
+  repository: .
+  version: 8.11.3
+  alias: rabbitmq
+
+  # !! "alias: preview" must be last entry in dependencies array !!
+  # !! Place custom dependencies above !!
+- alias: service3chart
+  name: service3chart
+  repository: .
+  version: 0.1.0

@@ -128,4 +128,95 @@ mysql> select * from comments;
 			
 		docker push zmg9046/myservice1:tag-1.0.0
 		
-		
+## Helm chart : MySpringApp2\myservice1
+	https://github.com/bitnami/charts/
+	$ helm repo add bitnami https://charts.bitnami.com/bitnami
+	$ helm repo list
+	$ helm repo update	
+	
+### create the helm charts
+	$ helm search repo mysql
+	$ helm search repo kafka
+	NAME                            CHART VERSION   APP VERSION     DESCRIPTION
+	bitnami/kafka                   12.12.0         2.7.0           Apache Kafka is a distributed streaming platform.
+	
+$ kubectl create ns hello
+$ helm ls --namespace hello
+
+$ kompose -f "docker-compose.yml" convert
+	INFO Kubernetes file "kafka1-service.yaml" created
+	INFO Kubernetes file "myservice1-service.yaml" created
+	INFO Kubernetes file "mysql1-service.yaml" created
+	INFO Kubernetes file "zookeeper-service.yaml" created
+	INFO Kubernetes file "kafka1-deployment.yaml" created
+	INFO Kubernetes file "myservice1-deployment.yaml" created
+	INFO Kubernetes file "mysql1-deployment.yaml" created
+	INFO Kubernetes file "zookeeper-deployment.yaml" created
+
+$ helm create service1chart
+$ helm lint				: to check whether the current helm chart is legal
+
+$ helm package service1chart
+$ helm package mysql
+$ helm package kafka
+
+$ mv kafka-12.11.0.tgz myservice1/charts/kafka-12.11.0.tgz
+$ mv mysql-0.1.0.tgz myservice1/charts/mysql-0.1.0.tgz
+$ mv service1chart-0.1.0.tgz myservice1/charts/service1chart-0.1.0.tgz
+
+### install the helm charts to Kubernetes
+$ helm install myservice1 myservice1 --namespace hello
+
+	$ helm --namespace hello ls
+	NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                         APP VERSION
+	myservice1      hello           1               2021-04-03 15:42:41.8612772 -0400 EDT   deployed        myservice1app-0.1.0-SNAPSHOT   
+	
+	$ kubectl -n hello get pvc
+	No resources found in hello namespace.
+	
+	$ kubectl -n hello get all
+	NAME                              READY   STATUS    RESTARTS   AGE
+	pod/myservice1-67cc9f58db-9gvrc   1/1     Running   5          9m50s
+	pod/myservice1-kafka-0            1/1     Running   1          9m50s
+	pod/myservice1-zookeeper-0        1/1     Running   0          9m50s
+	pod/mysql1-675ff8696c-8lz6x       1/1     Running   0          9m50s
+	
+	NAME                                    TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+	service/kafka1                          ClusterIP      10.99.76.141    <none>        9092/TCP                     9m51s
+	service/myservice1                      ClusterIP      10.110.192.8    <none>        8082/TCP                     9m51s
+	service/myservice1-kafka-headless       ClusterIP      None            <none>        9092/TCP,9093/TCP            9m51s
+	service/myservice1-zookeeper            ClusterIP      10.102.99.136   <none>        2181/TCP,2888/TCP,3888/TCP   9m50s
+	service/myservice1-zookeeper-headless   ClusterIP      None            <none>        2181/TCP,2888/TCP,3888/TCP   9m51s
+	service/mysql1                          LoadBalancer   10.98.146.233   localhost     3306:30205/TCP               9m50s
+	
+	NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+	deployment.apps/myservice1   1/1     1            1           9m50s
+	deployment.apps/mysql1       1/1     1            1           9m50s
+	
+	NAME                                    DESIRED   CURRENT   READY   AGE
+	replicaset.apps/myservice1-67cc9f58db   1         1         1       9m50s
+	replicaset.apps/mysql1-675ff8696c       1         1         1       9m50s
+	
+	NAME                                    READY   AGE
+	statefulset.apps/myservice1-kafka       1/1     9m50s
+	statefulset.apps/myservice1-zookeeper   1/1     9m50s
+
+$ kubectl -n hello port-forward service/myservice1 9082:8082
+
+$ curl -X GET http://localhost:9082/kafka/post?title=title3&desc=description%20Of%20T3
+; then the DB table [posts] will creat a new records:
+
+$ kubectl -n hello exec -it service/mysql1 -- bash
+	mysql --user=user1 --password='V4321abcd!' -e "show databases;"
+	use MyDB;
+	SELECT VERSION(), CURRENT_DATE, user();
+	show tables;
+	
+	mysql> SELECT * FROM posts;
+	+----+-------------------+--------+
+	| id | description       | title  |
+	+----+-------------------+--------+
+	|  1 | description Of T2 | title2 |
+	|  2 | description Of T3 | title3 |
+
+$ helm uninstall myservice1 --namespace hello
