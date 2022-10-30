@@ -7,6 +7,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 	yarn upgrade node-forge --latest
 	yarn upgrade http-proxy --latest
 
+ . To add React Router/styled-components in the application
+	$ npm i -D react-router-dom
+	
+	$ npm install --save styled-components
+
 ## Available Scripts
 
 In the project directory, you can run:

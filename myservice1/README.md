@@ -201,9 +201,12 @@ $ helm install myservice1 myservice1 --namespace hello
 	statefulset.apps/myservice1-kafka       1/1     9m50s
 	statefulset.apps/myservice1-zookeeper   1/1     9m50s
 
+$ kubectl -n hello port-forward service/kafka1 9092:9092
+$ kubectl -n hello port-forward service/myservice1-zookeeper 2181:2181
+
 $ kubectl -n hello port-forward service/myservice1 9082:8082
 
-$ curl -X GET http://localhost:9082/kafka/post?title=title3&desc=description%20Of%20T3
+$ curl -X GET "http://localhost:9082/kafka/post?title=title3&desc=description%20Of%20T3"
 ; then the DB table [posts] will creat a new records:
 
 $ kubectl -n hello exec -it service/mysql1 -- bash

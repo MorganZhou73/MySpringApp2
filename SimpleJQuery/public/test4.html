@@ -80,12 +80,12 @@ $(document).ready(function(){
       url: $("#destUrl").val(),
       data: postData,
       success: function(data,status){
-        $("#msg1").text("Data: " + data + "\nStatus: " + status);
+        $("#msg1").text("Data: " + JSON.stringify(data) + "\nStatus: " + status);
       },
       dataType: myType[0],
       contentType: myType[1],
       error: function (jqXHR, textStatus, errorThrown) {
-        $("#msg1").text("jqXHR: " + jqXHR + "\nStatus: " +         
+        $("#msg1").text("jqXHR: " + JSON.stringify(jqXHR) + "\nStatus: " +         
         textStatus + "\nError: " + errorThrown);
       }
     });

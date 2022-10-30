@@ -17,7 +17,7 @@ http://localhost:8080/
     Greeting2Controller (/hello; /greeting2 ; /searchPeople): sample of Spring MVC only, no REST
       - Controller integrated with Thymeleaf pages
             https://spring.io/guides/gs/serving-web-content/
-    Greeting2Test: sample of @MockBean and @WebMvcTest
+    Greeting2Test: sample of @MockBean , @WebMvcTest , Mockito.when
             https://spring.io/guides/gs/testing-web/
             
     PersonRepository (/people ) : web service connect Mongo DB collection (person)
@@ -98,7 +98,7 @@ D:\Temp>curl "http://localhost:9000/greeting-javaconfig" -H "Origin: http://loca
      . using @WebMvcTest, the full Spring application context is started but without the server. We can narrow the tests to only the web layer rather than the whole context
      
 ##--------------------------------------------------
-## curl Test in command window
+## curl Test in command window or GitBash
 curl http://localhost:8080/greeting?name=morgan
 
 curl -c ./cookie01 -d "username=user1" -d "password=secret123" "http://localhost:8080/login"
