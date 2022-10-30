@@ -18,6 +18,7 @@
 		
 	\myservice4: Spring Web Service accessing H2 In-memory DB
 		switch between H2 and MySQL DB
+		Postman collection : looping Post request demo
 	
 	\SimpleAngularJS:
 		simple web to test AngularJS

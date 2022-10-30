@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "e73f0da9-f888-4aea-a39b-f689219ab9c6",
+		"name": "MyLoop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13221281"
+	},
+	"item": [
+		{
+			"name": "creat User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let userIds = pm.variables.get(\"userIds\");\r",
+							"\r",
+							"if(!userIds || userIds.length == 0) {\r",
+							"\tuserIds = [\r",
+							"\t\t7,\r",
+							"\t\t8,\r",
+							"        9\r",
+							"\t];\r",
+							"}\r",
+							"\r",
+							"let currentUserId = userIds.shift();\r",
+							"pm.variables.set(\"userId\", currentUserId);\r",
+							"pm.variables.set(\"userIds\", userIds);\r",
+							"console.log(\"running for --> \" + currentUserId);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const userIds = pm.variables.get(\"userIds\");\r",
+							"\r",
+							"if(userIds && userIds.length > 0) {\r",
+							"\tsetTimeout(function(){}, 500);\r",
+							"\tpostman.setNextRequest(pm.info.requestName);\r",
+							"} else {\r",
+							"\tconsole.log(\"STOP\");\r",
+							"\tpostman.setNextRequest(null);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function() {\r",
+							"\tpm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"First{{userId}}\",\r\n    \"lastName\": \"Last\",\r\n    \"email\": \"name{{userId}}@test.com\",\r\n    \"password\": \"1234\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "userIds",
+			"value": ""
+		}
+	]
+}

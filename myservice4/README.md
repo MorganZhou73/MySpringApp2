@@ -42,6 +42,9 @@ $ java -jar target/*.jar
 spring.application.name=service4
 $server.servlet.context-path=/api/${spring.application.name}
 
+	. shellScript.sh
+	. myservice4.postman_collection.json
+	
     curl "http://localhost:8080/v1/users/uid01"
     
     curl "http://localhost:8080/v1/users?page=1&limit=10"
@@ -56,6 +59,8 @@ $server.servlet.context-path=/api/${spring.application.name}
 		"password":"123456"
 	}'
     
+	. MyLoop.postman_collection.json : Demo of looping post request
+	
 ### Log file
 
 	<appender name="STDOUT"
