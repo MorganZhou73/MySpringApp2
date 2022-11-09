@@ -1,11 +1,29 @@
 # Getting Started
 . https://www.baeldung.com/spring-boot-data-sql-and-schema-sql
  set spring.jpa.hibernate.ddl-auto=none will ensure that script-based initialization is performed using schema.sql and data.sql directly.
- 
- 
-$ mvn clean package
-$ java -jar target/*.jar
 
+## Start myservice4 API service 
+	$ cd myservice4
+	$ mvn clean package
+	$ java -jar target/*.jar
+	
+	Navigate to `http://localhost:8080/`
+	
+## Start Angular ui
+	$ cd myservice4/ui
+	$ ng serve
+	
+	Navigate to `http://localhost:4200/`
+	
+	$ ng generate component header
+	$ ng generate component users
+	$ ng generate component display-board
+	$ ng g c users/createUser
+	$ ng generate service services/user
+	$ ng generate interface model/User
+	$ ng generate service shared/services/api
+
+	
 ## Switch H2 DB and MySQL
     1. in pom.xml
 		<dependency>

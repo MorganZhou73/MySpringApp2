@@ -1,5 +1,9 @@
+
 # Client
 
+		https://spring.io/guides/tutorials/spring-security-and-angular-js/
+		https://github.com/spring-guides/tut-spring-security-and-angular-js/tree/main/basic
+		
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.7.
 
 ## Development server

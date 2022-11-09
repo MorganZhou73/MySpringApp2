@@ -1,0 +1,32 @@
+<div >
+    <h2>Create New User</h2>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <table>
+        <tr>
+          <td>First Name</td>
+          <td>
+            <input type="text" class="form-control" formControlName="firstName" id="firstName" placeholder="First Name">
+          </td>
+        </tr>
+        <tr>
+          <td>Last Name</td>
+          <td>
+            <input type="text" class="form-control" formControlName="lastName" id="lastName" placeholder="Last Name">
+          </td>
+        </tr>          
+        <tr>
+          <td>Email</td>
+          <td>
+            <input type="text" class="form-control" formControlName="email" id="email" aria-describedby="emailHelp" placeholder="Email">
+          </td>
+        </tr>          
+        <tr>
+          <td>Password</td>
+          <td>
+            <input type="text" class="form-control" formControlName="password" id="password" aria-describedby="passwordHelp" placeholder="Password">
+          </td>
+        </tr>          
+      </table>
+      <button type="submit" [disabled]="!userForm.valid" class="btn btn-danger">Create</button>
+    </form>
+  </div>

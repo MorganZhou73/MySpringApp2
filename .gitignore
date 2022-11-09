@@ -20,3 +20,4 @@ client
 mongo-volume
 angularapp1-init
 SimpleNodeJS/node_modules
+!**/src/test/script/*.txt
