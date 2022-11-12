@@ -19,6 +19,8 @@
 	$ ng generate component users
 	$ ng generate component display-board
 	$ ng g c users/createUser
+	$ ng g c shared/components/PageNotFound
+	
 	$ ng generate service services/user
 	$ ng generate interface model/User
 	$ ng generate service shared/services/api

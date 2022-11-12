@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DisplayBoardComponent } from './display-board.component';
+import { RemoveUserComponent } from './remove-user.component';
 
-describe('DisplayBoardComponent', () => {
-  let component: DisplayBoardComponent;
-  let fixture: ComponentFixture<DisplayBoardComponent>;
+describe('RemoveUserComponent', () => {
+  let component: RemoveUserComponent;
+  let fixture: ComponentFixture<RemoveUserComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DisplayBoardComponent ]
+      declarations: [ RemoveUserComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DisplayBoardComponent);
+    fixture = TestBed.createComponent(RemoveUserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

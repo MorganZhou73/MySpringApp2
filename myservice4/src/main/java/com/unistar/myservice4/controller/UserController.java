@@ -30,6 +30,9 @@ public class UserController {
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "20") int limit) {
+		
+		logger.info("getUsers: page={}, limit={} ...", page, limit);
+		
         // make page number from UI should be 1-based, while the DB is 0-based
         if(page > 0) {
             page--;
@@ -52,7 +55,8 @@ public class UserController {
 
     @GetMapping(path="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public UserRest getUser(@PathVariable String id) {
-
+		logger.info("getUser/{} ...", id);
+		
         UserDto userDto = userService.getUserByUserId(id);
         //UserRest returnValue = new UserRest();
         //BeanUtils.copyProperties(userDto, returnValue);
@@ -67,7 +71,8 @@ public class UserController {
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
-
+		logger.info("createUser : {} ", userDetails.getEmail());
+		
         if (userDetails.getFirstName().isEmpty())
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
@@ -92,7 +97,8 @@ public class UserController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public UserRest updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) {
-
+		logger.info("updateUser/{} ...", id);
+		
         //UserDto userDto = new UserDto();
         //BeanUtils.copyProperties(userDetails, userDto);
         ModelMapper modelMapper = new ModelMapper();
@@ -108,6 +114,8 @@ public class UserController {
 
     @DeleteMapping(path="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public OperationStatusModel deleteUser(@PathVariable String id) {
+		logger.info("deleteUser/{} ...", id);
+		
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
         userService.deleteUser(id);

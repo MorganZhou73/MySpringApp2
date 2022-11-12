@@ -29,3 +29,19 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Add router
  https://angular.io/guide/router-tutorial
 https://www.samjulien.com/add-routing-existing-angular-project
+
+## pass data dynamically to route component
+1) in app.component
+  <a class="button" routerLink="/users" [state]="{users: users}"
+      routerLinkActive="activebutton"
+      ariaCurrentWhenActive="page">Users List</a>
+
+   const state = { users: this.users };
+   this.router.navigate(['users'], {state} );
+
+2) in class UsersComponent
+  constructor(private router: Router) { 
+    const state = this.router.getCurrentNavigation()?.extras.state ?? {};
+    this.users = state['users'] ?? [];
+  }
+        

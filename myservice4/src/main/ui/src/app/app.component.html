@@ -1,12 +1,14 @@
 <app-header></app-header>
+<nav>
+  <a class="button" routerLink="/users"
+      routerLinkActive="activebutton"
+      ariaCurrentWhenActive="page">Users List</a> | 
+  <a class="button" routerLink="/createuser"
+      routerLinkActive="activebutton"
+      ariaCurrentWhenActive="page">New User</a> | 
+  <a class="button" routerLink="/removeuser"
+      routerLinkActive="activebutton"
+      ariaCurrentWhenActive="page">Remove User</a>    
+</nav>
 
-<div class="content" role="main">
-  
-  <app-display-board [userCount]="userCount" (getUsersEvent)="getAllUsers()"
-    (createUserEvent)="showCreateUser()" (removeUserEvent)="removeUser($event)">
-  </app-display-board>
-  
-  <app-create-user  *ngIf="creatUserFlag === true"></app-create-user>
-  <app-users *ngIf="!creatUserFlag && users.length !== 0" [users]="users"></app-users>
-  
-</div>
+<router-outlet></router-outlet>
