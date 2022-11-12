@@ -17,15 +17,17 @@
 	
 	$ ng generate component header
 	$ ng generate component users
-	$ ng generate component display-board
+	$ ng g c users/removeUser
 	$ ng g c users/createUser
 	$ ng g c shared/components/PageNotFound
 	
-	$ ng generate service services/user
-	$ ng generate interface model/User
 	$ ng generate service shared/services/api
-
+	$ ng generate service services/user
 	
+	$ ng generate interface model/User
+
+	- branch service4-ui-v1-simple : demo simple data binding , pass data between components
+
 ## Switch H2 DB and MySQL
     1. in pom.xml
 		<dependency>
