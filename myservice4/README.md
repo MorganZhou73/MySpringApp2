@@ -26,8 +26,32 @@
 	
 	$ ng generate interface model/User
 
-	- branch service4-ui-v1-simple : demo simple data binding , pass data between components
+	- branch service4-ui-v1-simple : demo simple data binding , pass data/event between components
 
+## pass data and events between components
+	1) in class AppComponent
+  <app-display-board [userCount]="userCount" (getUsersEvent)="getAllUsers()"
+    (createUserEvent)="showCreateUser()" (removeUserEvent)="removeUser($event)">
+  </app-display-board>	
+
+  removeUser(userid: string){
+    this.userServiceService.removeUser(userid)
+    .subscribe((response: any) => {
+      console.log('remove user::::', userid);
+    });
+  }
+
+	2) in class DisplayBoardComponent
+    <input #userId [(ngModel)]="currentUserId">
+    <button (click)="onRemoveClicked(userId.value)">Remove User</button>
+
+  @Input() userCount = 0;
+  @Output() removeUserEvent = new EventEmitter<string>();
+
+  onRemoveClicked(userid: string) {
+    this.removeUserEvent.emit(userid);
+  }
+  
 ## Switch H2 DB and MySQL
     1. in pom.xml
 		<dependency>
